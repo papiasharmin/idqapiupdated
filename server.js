@@ -14,8 +14,8 @@ const portNo = 3001;
 
 // APIサーバー起動
 const server = app.listen(portNo, () => {
-  logger.debug('起動しました', `http://localhost:3001`);//https://${ip.address()}:${portNo}
-  console.log('起動しました', `http://localhost:3001`);
+  logger.debug('起動しました', `https://${ip.address()}:${portNo}`);//http://localhost:3001
+  console.log('起動しました', `https://${ip.address()}:${portNo}`);
 });
 
 module.exports = {
