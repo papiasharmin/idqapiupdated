@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const app = express();
-const log4js = require('log4js');
+//const log4js = require('log4js');
 const { ethers } = require('ethers');
 // 暗号化用のモジュールを読み込む
 const crypto = require('crypto');
@@ -31,8 +31,8 @@ const { generateDID } = require('./modules/did/did');
 const { uploadFileToIpfs } = require('./modules/ipfs/ipfs');
 
 // log4jsの設定
-log4js.configure('./log/log4js_setting.json');
-const logger = log4js.getLogger("server");
+//log4js.configure('./log/log4js_setting.json');
+//const logger = log4js.getLogger("server");
 
 // get Mnemonic code
 const {
@@ -58,7 +58,7 @@ app.get("/",(req, res)=>{
 });
 
 app.post('/api/mintToken', async(req, res) => {
-  logger.log("発行用のAPI開始");
+  //logger.log("発行用のAPI開始");
 
   var to = req.query.to;
   var amount = req.query.amount;
@@ -76,13 +76,13 @@ app.post('/api/mintToken', async(req, res) => {
   console.log('MINTRESULT', result)
     
   if(result == true) {
-      logger.debug("トランザクション送信成功");
-      logger.log("発行用のAPI終了");
+      //logger.debug("トランザクション送信成功");
+      //logger.log("発行用のAPI終了");
       res.set({ 'Access-Control-Allow-Origin': '*' });
       res.json({ result: 'success' });
   } else {
-      logger.error("トランザクション送信失敗");
-      logger.log("発行用のAPI終了");
+      //logger.error("トランザクション送信失敗");
+      //logger.log("発行用のAPI終了");
       res.set({ 'Access-Control-Allow-Origin': '*' });
       res.json({ result: 'fail' });
   }
@@ -95,7 +95,7 @@ app.post('/api/mintToken', async(req, res) => {
  * @param walletAddr ウォレットアドレス
  */
 app.post('/api/burnToken', async(req, res) => {
-  logger.log("償却用のAPI開始")
+  //logger.log("償却用のAPI開始")
 
   var to = req.query.to;
   var amount = req.query.amount;
@@ -120,13 +120,13 @@ app.post('/api/burnToken', async(req, res) => {
       CHAIN_ID
     );
 
-    logger.debug("トランザクション送信成功");
-    logger.log("償却用のAPI終了")
+    //logger.debug("トランザクション送信成功");
+    //logger.log("償却用のAPI終了")
     res.set({ 'Access-Control-Allow-Origin': '*' });
     res.json({ result: 'success' });
   } else {
-    logger.error("トランザクション送信失敗");
-    logger.log("償却用のAPI終了")
+    //logger.error("トランザクション送信失敗");
+    //logger.log("償却用のAPI終了")
     res.set({ 'Access-Control-Allow-Origin': '*' });
     res.json({ result: 'fail' });
   }
@@ -137,7 +137,7 @@ app.post('/api/burnToken', async(req, res) => {
  * @param addr 残高を取得するアドレス
  */
 app.get('/api/balance/token', async(req, res) => {
-  logger.log("残高取得用のAPI開始");
+  //logger.log("残高取得用のAPI開始");
 
   var addr = req.query.addr;
 
@@ -150,7 +150,7 @@ app.get('/api/balance/token', async(req, res) => {
 
   const balance = await contract.callStatic.balanceOf(addr);
 
-  logger.log("残高取得用のAPI終了");
+  //logger.log("残高取得用のAPI終了");
   res.set({ 'Access-Control-Allow-Origin': '*' });
   res.json({ balance: balance });
 });
@@ -162,29 +162,29 @@ app.get('/api/balance/token', async(req, res) => {
  * @param amount 総金額
  */
 app.post('/api/send', async(req, res) => {
-  logger.log("token送金用のAPI開始");
+  //logger.log("token送金用のAPI開始");
 
   // get params
   var from = req.query.from;
   var to = req.query.to;
   var amount = req.query.amount;  
   // get wallet address
-  logger.log("from:", from);
-  logger.log("to:", to);
-  logger.log("amount:", amount);
+  //logger.log("from:", from);
+  //logger.log("to:", to);
+  //logger.log("amount:", amount);
 
   /**
    * check function
    */
   const resultCheck = (result) => {
     if(result == true) {
-      logger.debug("トランザクション送信成功");
-      logger.log("token送金用のAPI終了")
+      //logger.debug("トランザクション送信成功");
+      //logger.log("token送金用のAPI終了")
       res.set({ 'Access-Control-Allow-Origin': '*' });
       res.json({ result: 'success' });
     } else {
-      logger.error("トランザクション送信失敗");
-      logger.log("token送金用のAPI終了");
+      //logger.error("トランザクション送信失敗");
+      //logger.log("token送金用のAPI終了");
       res.set({ 'Access-Control-Allow-Origin': '*' });
       res.json({ result: 'fail' });
     }
@@ -209,9 +209,9 @@ app.post('/api/send', async(req, res) => {
     // get addr from did
     const balance = await myTokenContract.callStatic.balanceOf(fromAddr);
   
-    logger.log("fromAddr:", fromAddr);
-    logger.log("receiveAddr:", receiveAddr);
-    logger.log("送信元のbalance:", Number(balance._hex));
+    //logger.log("fromAddr:", fromAddr);
+    //logger.log("receiveAddr:", receiveAddr);
+    //logger.log("送信元のbalance:", Number(balance._hex));
     
     // check balance
     if(Number(balance._hex) >= amount) {
@@ -246,16 +246,16 @@ app.post('/api/send', async(req, res) => {
       // call sendBatchTxs function
       result = await sendBatchTx(txs).then((result) => resultCheck(result));
     } else {
-      logger.error("トランザクション送信失敗");
-      logger.error("残高不足");
-      logger.log("token送金用のAPI終了");
+      //logger.error("トランザクション送信失敗");
+      //logger.error("残高不足");
+      //logger.log("token送金用のAPI終了");
       res.set({ 'Access-Control-Allow-Origin': '*' });
       res.json({ result: 'fail' });
     }
   } catch(err) {
-    logger.error("トランザクション送信失敗");
-    logger.error("エラー原因：", err);
-    logger.log("token送金用のAPI終了");
+    //logger.error("トランザクション送信失敗");
+    //logger.error("エラー原因：", err);
+    //logger.log("token送金用のAPI終了");
     res.set({ 'Access-Control-Allow-Origin': '*' });
     res.json({ result: 'fail' });
   }
@@ -266,7 +266,7 @@ app.post('/api/send', async(req, res) => {
  * @param addr 登録するアドレス
  */
 app.post('/api/create', async(req, res) => {
-  logger.log("DID作成用のAPI開始");
+  //logger.log("DID作成用のAPI開始");
 
   var addr = req.query.addr;
 
@@ -276,7 +276,7 @@ app.post('/api/create', async(req, res) => {
     did
   } = await generateDID();
   
-  logger.log("response:", response);
+  //logger.log("response:", response);
   // upload to ipfs
   await uploadFileToIpfs(response, addr);
   
@@ -299,21 +299,21 @@ app.post('/api/create', async(req, res) => {
     console.log('RESULT',result)
 
     if(result == true) {
-      logger.debug("トランザクション送信成功");
-      logger.log("DID作成用のAPI終了")
-      logger.log("DID:", didUrl);
+      //logger.debug("トランザクション送信成功");
+      //logger.log("DID作成用のAPI終了")
+      //logger.log("DID:", didUrl);
       res.set({ 'Access-Control-Allow-Origin': '*' });
       res.json({ result: 'success' });
     } else {
-      logger.error("トランザクション送信失敗");
-      logger.log("DID作成用のAPI終了")
+      //logger.error("トランザクション送信失敗");
+      //logger.log("DID作成用のAPI終了")
       res.set({ 'Access-Control-Allow-Origin': '*' });
       res.json({ result: 'fail' });
     }
   } catch(err) {
-      logger.error("トランザクション送信失敗");
-      logger.error("エラー詳細：", err);
-      logger.log("DID作成用のAPI終了")
+      //logger.error("トランザクション送信失敗");
+      //logger.error("エラー詳細：", err);
+      //logger.log("DID作成用のAPI終了")
       res.set({ 'Access-Control-Allow-Origin': '*' });
       res.json({ result: 'fail' });
   }
@@ -327,7 +327,7 @@ app.get('/api/resolve', async(req, res) => {
   var uri = req.query.uri;
   // resolve
   const response = await ION.resolve(uri);
-  logger.log("response:", response);
+  //logger.log("response:", response);
 
   res.set({ 'Access-Control-Allow-Origin': '*' });
   res.json({ result : response });
@@ -353,7 +353,7 @@ app.post('/api/verify', async(req, res) => {
  * @param args 引数
  */
 app.post('/api/excute/factory', async(req, res) => {
-  logger.log("FactoryWalletのメソッドを実行するためのAPI開始")
+  //logger.log("FactoryWalletのメソッドを実行するためのAPI開始")
   // 呼び出す関数名
   var methodName = req.query.methodName;
   // 関数の引数
@@ -370,13 +370,13 @@ app.post('/api/excute/factory', async(req, res) => {
   );
     
   if(result == true) {
-    logger.debug("トランザクション送信成功");
-    logger.log("FactoryWalletのメソッドを実行するためのAPI終了")
+    //logger.debug("トランザクション送信成功");
+    //logger.log("FactoryWalletのメソッドを実行するためのAPI終了")
     res.set({ 'Access-Control-Allow-Origin': '*' });
     res.json({ result: 'success' });
   } else {
-    logger.error("トランザクション送信失敗");
-    logger.error("FactoryWalletのメソッドを実行するためのAPI終了")
+    //logger.error("トランザクション送信失敗");
+    //logger.error("FactoryWalletのメソッドを実行するためのAPI終了")
     res.set({ 'Access-Control-Allow-Origin': '*' });
     res.json({ result: 'fail' });
   }
@@ -389,7 +389,7 @@ app.post('/api/excute/factory', async(req, res) => {
  * @param required 閾値
  */
 app.post('/api/factory/create', async(req, res) => {
-  logger.log("マルチシグウォレットを作成するための API開始");
+  //logger.log("マルチシグウォレットを作成するための API開始");
   // 関数の引数を取得する。
   var name = req.query.name;
   var owners = req.query.owners;
@@ -408,13 +408,13 @@ app.post('/api/factory/create', async(req, res) => {
   );
    console.log('RESULT',result) 
   if(result == true) {
-    logger.debug("トランザクション送信成功");
-    logger.log("マルチシグウォレットを作成するための API終了")
+    //logger.debug("トランザクション送信成功");
+    //logger.log("マルチシグウォレットを作成するための API終了")
     res.set({ 'Access-Control-Allow-Origin': '*' });
     res.json({ result: 'success' });
   } else {
-    logger.error("トランザクション送信失敗");
-    logger.error("マルチシグウォレットを作成するための API終了")
+    //logger.error("トランザクション送信失敗");
+    //logger.error("マルチシグウォレットを作成するための API終了")
     res.set({ 'Access-Control-Allow-Origin': '*' });
     res.json({ result: 'fail' });
   }
@@ -428,7 +428,7 @@ app.post('/api/factory/create', async(req, res) => {
  * @param address ウォレットアドレス
  */
 app.post('/api/wallet/submit', async(req, res) => {
-  logger.log("トランザクションを submit するための API開始");
+  //logger.log("トランザクションを submit するための API開始");
   // 関数の引数を取得する。
   var to = req.query.to;
   var value = req.query.value;
@@ -450,13 +450,13 @@ app.post('/api/wallet/submit', async(req, res) => {
   );
     
   if(result == true) {
-    logger.debug("トランザクション送信成功");
-    logger.log("トランザクションを submit するための API終了")
+    //logger.debug("トランザクション送信成功");
+    //logger.log("トランザクションを submit するための API終了")
     res.set({ 'Access-Control-Allow-Origin': '*' });
     res.json({ result: 'success' });
   } else {
-    logger.error("トランザクション送信失敗");
-    logger.error("トランザクションを submit するための API終了")
+    //logger.error("トランザクション送信失敗");
+    //logger.error("トランザクションを submit するための API終了")
     res.set({ 'Access-Control-Allow-Origin': '*' });
     res.json({ result: 'fail' });
   }
@@ -468,7 +468,7 @@ app.post('/api/wallet/submit', async(req, res) => {
  * @param address ウォレットアドレス
  */
 app.post('/api/wallet/approve', async(req, res) => {
-  logger.log("トランザクションを approve するための API開始");
+  //logger.log("トランザクションを approve するための API開始");
   // 関数の引数を取得する。
   var txId = req.query.txId;
   var address = req.query.address;
@@ -484,13 +484,13 @@ app.post('/api/wallet/approve', async(req, res) => {
   );
     
   if(result == true) {
-    logger.debug("トランザクション送信成功");
-    logger.log("トランザクションを approve するための API終了")
+    //logger.debug("トランザクション送信成功");
+    //logger.log("トランザクションを approve するための API終了")
     res.set({ 'Access-Control-Allow-Origin': '*' });
     res.json({ result: 'success' });
   } else {
-    logger.error("トランザクション送信失敗");
-    logger.error("トランザクションを approve するための API終了")
+    //logger.error("トランザクション送信失敗");
+    //logger.error("トランザクションを approve するための API終了")
     res.set({ 'Access-Control-Allow-Origin': '*' });
     res.json({ result: 'fail' });
   }
@@ -502,7 +502,7 @@ app.post('/api/wallet/approve', async(req, res) => {
  * @param address ウォレットアドレス
  */
 app.post('/api/wallet/revoke', async(req, res) => {
-  logger.log("トランザクションを revoke するための API開始");
+  //logger.log("トランザクションを revoke するための API開始");
   // 関数の引数を取得する。
   var txId = req.query.txId;
   var address = req.query.address;
@@ -518,13 +518,13 @@ app.post('/api/wallet/revoke', async(req, res) => {
   );
     
   if(result == true) {
-    logger.debug("トランザクション送信成功");
-    logger.log("トランザクションを revoke するための API終了")
+    //logger.debug("トランザクション送信成功");
+    //logger.log("トランザクションを revoke するための API終了")
     res.set({ 'Access-Control-Allow-Origin': '*' });
     res.json({ result: 'success' });
   } else {
-    logger.error("トランザクション送信失敗");
-    logger.error("トランザクションを revoke するための API終了")
+    //logger.error("トランザクション送信失敗");
+    //logger.error("トランザクションを revoke するための API終了")
     res.set({ 'Access-Control-Allow-Origin': '*' });
     res.json({ result: 'fail' });
   }
@@ -536,7 +536,7 @@ app.post('/api/wallet/revoke', async(req, res) => {
  * @param address ウォレットアドレス
  */
 app.post('/api/wallet/execute', async(req, res) => {
-  logger.log("トランザクションを execute するための API開始");
+  //logger.log("トランザクションを execute するための API開始");
   // 関数の引数を取得する。
   var txId = req.query.txId;
   var address = req.query.address;
@@ -552,13 +552,13 @@ app.post('/api/wallet/execute', async(req, res) => {
   );
     
   if(result == true) {
-    logger.debug("トランザクション送信成功");
-    logger.log("トランザクションを execute するための API終了")
+    //logger.debug("トランザクション送信成功");
+    //logger.log("トランザクションを execute するための API終了")
     res.set({ 'Access-Control-Allow-Origin': '*' });
     res.json({ result: 'success' });
   } else {
-    logger.error("トランザクション送信失敗");
-    logger.error("トランザクションを execute するための API終了")
+    //logger.error("トランザクション送信失敗");
+    //logger.error("トランザクションを execute するための API終了")
     res.set({ 'Access-Control-Allow-Origin': '*' });
     res.json({ result: 'fail' });
   }
@@ -569,7 +569,7 @@ app.post('/api/wallet/execute', async(req, res) => {
  * ※ テスト用 (1400円分)
  */
 app.get("/api/create-payment-intent", async (req, res) => {
-  logger.debug("Payment API開始");
+  //logger.debug("Payment API開始");
   console.log('create-payment-intent')
   // create paymentIntent 
   const paymentIntent = await stripe.paymentIntents.create({
@@ -586,7 +586,7 @@ app.get("/api/create-payment-intent", async (req, res) => {
     clientSecret: paymentIntent.client_secret,
   });
 
-  logger.debug("Payment API終了");
+  //logger.debug("Payment API終了");
 });
 
 /**
@@ -596,7 +596,7 @@ app.get("/api/create-payment-intent", async (req, res) => {
  * @param cid CID情報
  */
 app.post("/api/registerIpfs", async (req, res) => {
-  logger.debug("Register Ipfs API開始");
+  //logger.debug("Register Ipfs API開始");
 
   // リクエストパラメータから情報を取得する。
   var did = req.query.did;
@@ -614,13 +614,13 @@ app.post("/api/registerIpfs", async (req, res) => {
   );
 
   if(result == true) {
-    logger.debug("トランザクション送信成功");
-    logger.log("Register Ipfs API終了")
+    //logger.debug("トランザクション送信成功");
+    //logger.log("Register Ipfs API終了")
     res.set({ 'Access-Control-Allow-Origin': '*' });
     res.json({ result: 'success' });
   } else {
-    logger.error("トランザクション送信失敗");
-    logger.log("Register Ipfs API終了")
+    //logger.error("トランザクション送信失敗");
+    //logger.log("Register Ipfs API終了")
     res.set({ 'Access-Control-Allow-Origin': '*' });
     res.json({ result: 'fail' });
   }
@@ -628,5 +628,5 @@ app.post("/api/registerIpfs", async (req, res) => {
 
 module.exports = {
   app,
-  logger
+  //logger
 };

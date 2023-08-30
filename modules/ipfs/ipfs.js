@@ -12,10 +12,10 @@ const {
       FOLDER_PATH
 } = require('./../../utils/constants');
 
-const log4js = require('log4js');
+//const log4js = require('log4js');
 // log4jsの設定
-log4js.configure('./log/log4js_setting.json');
-const logger = log4js.getLogger("server");
+//log4js.configure('./log/log4js_setting.json');
+//const logger = log4js.getLogger("server");
 const fs = require('fs');
 const pinataSDK = require('@pinata/sdk');
 
@@ -45,10 +45,10 @@ const options = {
 const uploadJsonToIpfs = async(data) => {
       // upload
       pinata.pinJSONToIPFS(data, options).then((result) => {
-            logger.log("pinJSONToIPFS result:", result);
+            //logger.log("pinJSONToIPFS result:", result);
             return result;
       }).catch((err) => {        
-            logger.error("pinJSONToIPFS result:", err);
+            //logger.error("pinJSONToIPFS result:", err);
             return err;
       });
 };
@@ -67,15 +67,15 @@ const uploadFileToIpfs = async(data, addr) => {
             // ファイルをアップロードする。
             await pinata.pinFileToIPFS(readableStreamForFile, options).then((result) => {
                   //handle results here
-                  logger.log("uploadFileToIpfs result:", result);
+                  //logger.log("uploadFileToIpfs result:", result);
             }).catch((err) => {
                   //handle error here
                   console.log("uploadFileToIpfs result:", err);
-                  logger.error("uploadFileToIpfs result:", err);
+                  //logger.error("uploadFileToIpfs result:", err);
             });
       } catch (err) {
             console.log("uploadFileToIpfs result:", err);
-            logger.error("uploadFileToIpfs result:", err);
+            //logger.error("uploadFileToIpfs result:", err);
       }
 
 };

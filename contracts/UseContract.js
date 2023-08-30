@@ -1,11 +1,11 @@
 require('dotenv/config');
 const { ethers } = require('ethers');
 //const { KmsEthersSigner } = require('aws-kms-ethers-signer');
-const log4js = require('log4js');
+//const log4js = require('log4js');
 //const { KEY_ID, REGION_ID } = require('../utils/constants');
 // log4jsの設定
-log4js.configure('./log/log4js_setting.json');
-const logger = log4js.getLogger("server");
+//log4js.configure('./log/log4js_setting.json');
+//const logger = log4js.getLogger("server");
 const { Alchemy, Network, Wallet, Utils } = require("alchemy-sdk");
 
 // get Mnemonic code
@@ -89,10 +89,10 @@ const sendTx = async(abi, address, functionName, args, rpc_url, chainId) => {
     try {
         const res = await provider.sendTransaction(signedTransaction);
         
-        logger.log("Tx send result:", res);
+        //logger.log("Tx send result:", res);
     } catch(e) {
         console.log(e)
-        logger.error("Tx send error:", e);
+        //logger.error("Tx send error:", e);
         return false;
     }
 
@@ -134,7 +134,7 @@ const sendBatchTx = async(txs) => {
         }
         // sign tx
         var signedTransaction = await wallet.signTransaction(tx).then(ethers.utils.serializeTransaction(tx));
-        logger.log("signedTransaction:", signedTransaction);
+        //logger.log("signedTransaction:", signedTransaction);
         // push
         signedTxs.push(signedTransaction);
     }
@@ -146,10 +146,10 @@ const sendBatchTx = async(txs) => {
         
         for(var i = 0; i< count; i++) {
             res = await provider.sendTransaction(signedTxs[i]);
-            logger.log("Tx send result:", res);
+            //logger.log("Tx send result:", res);
         }
     } catch(e) {
-        logger.error("Tx send error:", e);
+        //logger.error("Tx send error:", e);
         return false;
     }
 
@@ -174,7 +174,7 @@ const sendEth = async(to, value, rpc_url, chainId) => {
     // get nonce
     var nonce = await provider.getTransactionCount(await wallet.getAddress(),'pending');
 
-    logger.log("send ETH amount:", ethers.utils.parseEther(value.toString())._hex);
+    //logger.log("send ETH amount:", ethers.utils.parseEther(value.toString())._hex);
    
     // create tx data
     var tx = {
@@ -191,9 +191,9 @@ const sendEth = async(to, value, rpc_url, chainId) => {
     try {
         // send tx
         const res = await provider.sendTransaction(signedTransaction);
-        logger.log("Tx send result:", res);
+        //logger.log("Tx send result:", res);
     } catch(e) {
-        logger.error("Tx send error:", e);
+        //logger.error("Tx send error:", e);
         return false;
     }
 

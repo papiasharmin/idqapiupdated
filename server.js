@@ -5,7 +5,7 @@
 // import app modules
 const {
   app,
-  logger
+  //logger
 } = require('./index');
 const ip = require('ip');
 
@@ -14,7 +14,7 @@ const portNo = 3001;
 
 // APIサーバー起動
 const server = app.listen(portNo, () => {
-  logger.debug('起動しました', `https://${ip.address()}:${portNo}`);//http://localhost:3001
+  //logger.debug('起動しました', `https://${ip.address()}:${portNo}`);//http://localhost:3001
   console.log('起動しました', `https://${ip.address()}:${portNo}`);
 });
 
