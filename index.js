@@ -15,20 +15,20 @@ const {
   sendEth,
   wallet,
   provider
-}= require('../contracts/UseContract');
+}= require('./contracts/UseContract');
 // ABIs
-const { FactoryABI } = require('../contracts/ABI/FactoryABI');
-const { MyTokenABI } = require('../contracts/ABI/MyTokenABI');
-const { WalletABI } = require('../contracts/ABI/WalletABI');
+const { FactoryABI } = require('./contracts/ABI/FactoryABI');
+const { MyTokenABI } = require('./contracts/ABI/MyTokenABI');
+const { WalletABI } = require('./contracts/ABI/WalletABI');
 // contract address
-const contractAddr = require('../contracts/Address');
+const contractAddr = require('./contracts/Address');
 // get contants 
 const {
   RPC_URL,
   CHAIN_ID
-} = require('./../utils/constants');
-const { generateDID } = require('./did/did');
-const { uploadFileToIpfs } = require('./ipfs/ipfs');
+} = require('./utils/constants');
+const { generateDID } = require('./modules/did/did');
+const { uploadFileToIpfs } = require('./modules/ipfs/ipfs');
 
 // log4jsの設定
 log4js.configure('./log/log4js_setting.json');
@@ -53,6 +53,10 @@ app.use(express.json());
  * @param to 発行先アドレス
  * @param amount 発行量
  */
+app.get("/",(req, res)=>{
+  res.json("HELLO")
+});
+
 app.post('/api/mintToken', async(req, res) => {
   logger.log("発行用のAPI開始");
 

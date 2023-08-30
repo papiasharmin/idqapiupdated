@@ -6,7 +6,7 @@
 const {
   app,
   logger
-} = require('./modules/app');
+} = require('./index');
 const ip = require('ip');
 
 // ポート番号
