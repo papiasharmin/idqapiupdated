@@ -17,20 +17,20 @@ const {
   sendEth,
   wallet,
   provider
-}= require('./contracts/UseContract');
+}= require('../contracts/UseContract');
 // ABIs
-const { FactoryABI } = require('./contracts/ABI/FactoryABI');
-const { MyTokenABI } = require('./contracts/ABI/MyTokenABI');
-const { WalletABI } = require('./contracts/ABI/WalletABI');
+const { FactoryABI } = require('../contracts/ABI/FactoryABI');
+const { MyTokenABI } = require('../contracts/ABI/MyTokenABI');
+const { WalletABI } = require('../contracts/ABI/WalletABI');
 // contract address
-const contractAddr = require('./contracts/Address');
+const contractAddr = require('../contracts/Address');
 // get contants 
 const {
   RPC_URL,
   CHAIN_ID
-} = require('./utils/constants');
-const { generateDID } = require('./modules/did/did');
-const { uploadFileToIpfs } = require('./modules/ipfs/ipfs');
+} = require('../utils/constants');
+const { generateDID } = require('./did/did');
+const { uploadFileToIpfs } = require('./ipfs/ipfs');
 
 // log4jsの設定
 //log4js.configure('./log/log4js_setting.json');
