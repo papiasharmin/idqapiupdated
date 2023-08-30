@@ -4,11 +4,11 @@ const app = express();
 //const log4js = require('log4js');
 const { ethers } = require('ethers');
 // 暗号化用のモジュールを読み込む
-const crypto = require('crypto');
+//const crypto = require('crypto');
 // did用のモジュールを読み込む
 const ION = require('@decentralized-identity/ion-tools')
 
-const ip = require('ip');
+//const ip = require('ip');
 // ブロックチェーン機能のモジュールを読み込む
 const {
   
@@ -642,7 +642,7 @@ const portNo = 3001;
 // APIサーバー起動
 const server = app.listen(portNo, () => {
   //logger.debug('起動しました', `https://${ip.address()}:${portNo}`);//http://localhost:3001
-  console.log('起動しました', `https://${ip.address()}:${portNo}`);
+  console.log('起動しました');
 });
 
 
