@@ -17,20 +17,20 @@ const {
   sendEth,
   wallet,
   provider
-}= require('../contracts/UseContract');
+}= require('./contracts/UseContract');
 // ABIs
-const { FactoryABI } = require('../contracts/ABI/FactoryABI');
-const { MyTokenABI } = require('../contracts/ABI/MyTokenABI');
-const { WalletABI } = require('../contracts/ABI/WalletABI');
+const { FactoryABI } = require('./contracts/ABI/FactoryABI');
+const { MyTokenABI } = require('./contracts/ABI/MyTokenABI');
+const { WalletABI } = require('./contracts/ABI/WalletABI');
 // contract address
-const contractAddr = require('../contracts/Address');
+const contractAddr = require('./contracts/Address');
 // get contants 
 const {
   RPC_URL,
   CHAIN_ID
-} = require('../utils/constants');
-const { generateDID } = require('./did/did');
-const { uploadFileToIpfs } = require('./ipfs/ipfs');
+} = require('./utils/constants');
+const { generateDID } = require('./modules/did/did');
+const { uploadFileToIpfs } = require('./modules/ipfs/ipfs');
 
 // log4jsの設定
 //log4js.configure('./log/log4js_setting.json');
@@ -140,7 +140,7 @@ app.post('/api/burnToken', async(req, res) => {
  * Tokenの残高を取得するAPI
  * @param addr 残高を取得するアドレス
  */
-app.get('/api/balance/token', async(req, res) => {
+app.post('/api/balance/token', async(req, res) => {
   //logger.log("残高取得用のAPI開始");
 
   var addr = req.query.addr;
@@ -576,6 +576,7 @@ app.get("/api/create-payment-intent", async (req, res) => {
   //logger.debug("Payment API開始");
   console.log('create-payment-intent')
   // create paymentIntent 
+  try{
   const paymentIntent = await stripe.paymentIntents.create({
     amount: 14,
     currency: "jpy",
@@ -589,6 +590,7 @@ app.get("/api/create-payment-intent", async (req, res) => {
   res.send({
     clientSecret: paymentIntent.client_secret,
   });
+} catch(err) {console.log(err)}
   
 
   //logger.debug("Payment API終了");
@@ -639,7 +641,7 @@ const portNo = 3001;
 // APIサーバー起動
 const server = app.listen(portNo, () => {
   //logger.debug('起動しました', `https://${ip.address()}:${portNo}`);//http://localhost:3001
-  console.log('起動しました', `https://${ip.address()}:${portNo}`);
+  console.log('起動しました', `http://localhost:3001`);
 });
 
 
