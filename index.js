@@ -577,6 +577,7 @@ app.get("/api/create-payment-intent", async (req, res) => {
   console.log('create-payment-intent')
   // create paymentIntent 
   try{
+    
   const paymentIntent = await stripe.paymentIntents.create({
     amount: 14,
     currency: "jpy",
@@ -641,7 +642,7 @@ const portNo = 3001;
 // APIサーバー起動
 const server = app.listen(portNo, () => {
   //logger.debug('起動しました', `https://${ip.address()}:${portNo}`);//http://localhost:3001
-  console.log('起動しました', `http://localhost:3001`);
+  console.log('起動しました', `https://${ip.address()}:${portNo}`);
 });
 
 
