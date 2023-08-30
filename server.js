@@ -1,7 +1,3 @@
-/**
- * APIサーバー設定ファイル
- */
-
 // import app modules
 const {
   app
