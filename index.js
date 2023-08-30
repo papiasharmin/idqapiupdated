@@ -645,7 +645,15 @@ const server = app.listen(portNo, () => {
   console.log('起動しました');
 });
 
+process.on('SIGINT', () => {
+  console.log('Closing the server...');
+  server.close(() => {
+    console.log('Server closed.');
+    process.exit();
+  });
+});
 
 
 
-module.exports = server;
+
+//module.exports = server;
