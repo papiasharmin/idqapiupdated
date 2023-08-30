@@ -4,9 +4,9 @@
 
 // import app modules
 const {
-  app,
-  //logger
+  app
 } = require('./index');
+
 const ip = require('ip');
 
 // ポート番号
