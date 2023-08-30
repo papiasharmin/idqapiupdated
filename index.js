@@ -59,6 +59,7 @@ app.get("/",(req, res)=>{
 
 app.post('/api/mintToken', async(req, res) => {
   //logger.log("発行用のAPI開始");
+  console.log("発行用のAPI開始");
 
   var to = req.query.to;
   var amount = req.query.amount;
@@ -78,6 +79,7 @@ app.post('/api/mintToken', async(req, res) => {
   if(result == true) {
       //logger.debug("トランザクション送信成功");
       //logger.log("発行用のAPI終了");
+      console.log("発行用のAPI終了");
       res.set({ 'Access-Control-Allow-Origin': '*' });
       res.json({ result: 'success' });
   } else {
@@ -627,6 +629,6 @@ app.post("/api/registerIpfs", async (req, res) => {
 });
 
 module.exports = {
-  app,
-  //logger
+  app
+
 };

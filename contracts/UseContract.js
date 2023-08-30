@@ -88,7 +88,7 @@ const sendTx = async(abi, address, functionName, args, rpc_url, chainId) => {
 
     try {
         const res = await provider.sendTransaction(signedTransaction);
-        
+        console.log("Tx send result:", res);
         //logger.log("Tx send result:", res);
     } catch(e) {
         console.log(e)
