@@ -55,9 +55,9 @@ app.use(express.json());
  * @param to 発行先アドレス
  * @param amount 発行量
  */
-app.get("/",(req, res)=>{
-  res.json("HELLO")
-});
+// app.get("/",(req, res)=>{
+//   res.json("HELLO")
+// });
 
 app.post('/api/mintToken', async(req, res) => {
   //logger.log("発行用のAPI開始");
