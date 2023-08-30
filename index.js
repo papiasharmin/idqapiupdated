@@ -7,6 +7,8 @@ const { ethers } = require('ethers');
 const crypto = require('crypto');
 // did用のモジュールを読み込む
 const ION = require('@decentralized-identity/ion-tools')
+
+const ip = require('ip');
 // ブロックチェーン機能のモジュールを読み込む
 const {
   
@@ -630,7 +632,16 @@ app.post("/api/registerIpfs", async (req, res) => {
 
 
 
+// ポート番号
+const portNo = 3001;
 
-module.exports = {
-  app
-};
+// APIサーバー起動
+const server = app.listen(portNo, () => {
+  //logger.debug('起動しました', `https://${ip.address()}:${portNo}`);//http://localhost:3001
+  console.log('起動しました', `https://${ip.address()}:${portNo}`);
+});
+
+
+
+
+module.exports = server;
