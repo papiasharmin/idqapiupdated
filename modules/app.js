@@ -589,6 +589,7 @@ app.get("/api/create-payment-intent", async (req, res) => {
   res.send({
     clientSecret: paymentIntent.client_secret,
   });
+  
 
   //logger.debug("Payment API終了");
 });
