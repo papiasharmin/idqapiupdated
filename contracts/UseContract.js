@@ -78,7 +78,7 @@ const sendTx = async(abi, address, functionName, args, rpc_url, chainId) => {
     // create tx data
     var tx = {
         gasPrice: 300000000000,
-        gasLimit: 210000,
+        gasLimit: 2100000,
         data: func,
         to: address,
         nonce: nonce,

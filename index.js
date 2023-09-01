@@ -109,7 +109,7 @@ app.post('/api/burnToken', async(req, res) => {
   //logger.log("償却用のAPI開始")
 
   var to = req.query.to;
-  var amount = req.query.amount;
+  var amount = new ethers.utils.parseUnits(req.query.amount);
   var walletAddr = req.query.walletAddr;
 
   // call send Tx function
@@ -443,7 +443,7 @@ app.post('/api/wallet/submit', async(req, res) => {
   //logger.log("トランザクションを submit するための API開始");
   // 関数の引数を取得する。
   var to = req.query.to;
-  var value = req.query.value;
+  var value = new ethers.utils.parseUnits( req.query.value);
   var data = req.query.data;
   var address = req.query.address;
 
