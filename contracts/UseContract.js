@@ -59,6 +59,7 @@ const sendTx = async(abi, address, functionName, args, rpc_url, chainId) => {
     if(functionName === 'mint'){
         i++
     }
+    try {
     var contract = new ethers.utils.Interface(abi);
     // crate contract function data
     var func = contract.encodeFunctionData(functionName, args);
@@ -86,7 +87,7 @@ const sendTx = async(abi, address, functionName, args, rpc_url, chainId) => {
     // sign tx
     var signedTransaction = await wallet.signTransaction(tx).then(ethers.utils.serializeTransaction(tx));
 
-    try {
+    
         const res = await provider.sendTransaction(signedTransaction);
         console.log("Tx send result:", res);
         //logger.log("Tx send result:", res);
@@ -109,7 +110,7 @@ const sendBatchTx = async(txs) => {
     const count = txs.length;
     // Array for signedTx
     const signedTxs = [];
-
+    try {
     for(var i = 0; i< count; i++) {
         // contract interface
         var contract = new ethers.utils.Interface(txs[i][0]);
@@ -140,7 +141,7 @@ const sendBatchTx = async(txs) => {
     }
 
     // execute
-    try {
+    
         // send tx
         var res;
         
@@ -168,6 +169,7 @@ const sendEth = async(to, value, rpc_url, chainId) => {
     // create wallet object
     //var wallet = createKmsSigner();
     // create provider
+    try {
     var provider = new ethers.providers.AlchemyProvider("maticmum",API_KEY);;
     // conncet provider
     wallet.connect(provider);
@@ -188,7 +190,7 @@ const sendEth = async(to, value, rpc_url, chainId) => {
     // sign tx
     var signedTransaction = await wallet.signTransaction(tx).then(ethers.utils.serializeTransaction(tx));
 
-    try {
+    
         // send tx
         const res = await provider.sendTransaction(signedTransaction);
         //logger.log("Tx send result:", res);

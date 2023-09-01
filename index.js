@@ -586,22 +586,21 @@ app.get("/api/create-payment-intent", async (req, res) => {
   // create paymentIntent 
   try{
     
-  // const paymentIntent = await stripe.paymentIntents.create({
-  //   amount: 14,
-  //   currency: "jpy",
-  //   automatic_payment_methods: {
-  //     enabled: true,
-  //   },
-  // });
+  const paymentIntent = await stripe.paymentIntents.create({
+    amount: 14,
+    currency: "jpy",
+    automatic_payment_methods: {
+      enabled: true,
+    },
+  });
 
   res.set({ 'Access-Control-Allow-Origin': '*' });
   // send
   res.send(
-    //{clientSecret: paymentIntent.client_secret,}
-    'hello'
+    {clientSecret: paymentIntent.client_secret,}
   );
-  res.json()
-} catch(err) {console.log(err)}
+  
+} catch(err) {res.send(err)}
   
 
   //logger.debug("Payment API終了");
