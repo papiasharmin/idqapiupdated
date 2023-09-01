@@ -66,7 +66,7 @@ const sendTx = async(abi, address, functionName, args, rpc_url, chainId) => {
     //var wallet = createKmsSigner(); // right now using alchemy sdk to get signer
     // create provider
     var provider = new ethers.providers.AlchemyProvider("maticmum",API_KEY);
-    
+   
     // conncet provider
     wallet.connect(provider);
     const addre = await wallet.getAddress()
@@ -77,7 +77,7 @@ const sendTx = async(abi, address, functionName, args, rpc_url, chainId) => {
     // create tx data
     var tx = {
         gasPrice: 300000000000,
-        gasLimit: 2500000,
+        gasLimit: 210000,
         data: func,
         to: address,
         nonce: nonce,

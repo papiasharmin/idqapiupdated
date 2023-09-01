@@ -8,6 +8,11 @@ const { ethers } = require('ethers');
 // did用のモジュールを読み込む
 const ION = require('@decentralized-identity/ion-tools')
 
+const cors = require('cors');
+
+
+
+
 //const ip = require('ip');
 // ブロックチェーン機能のモジュールを読み込む
 const {
@@ -45,6 +50,8 @@ const {
 const stripe = require("stripe")(`${STRIPE_API_KEY}`);
 app.use(express.static("public"));
 app.use(express.json());
+// Enable CORS for all routes
+app.use(cors());
 
 ////////////////////////////////////////////////////////////
 // APIの定義
@@ -204,6 +211,7 @@ app.post('/api/send', async(req, res) => {
     // create mytoken contract 
     var myTokenContract = new ethers.Contract(contractAddr.MYTOKEN_ADDRESS, MyTokenABI, signer);
     var mcon =  new ethers.utils.Interface(MyTokenABI)
+    
     console.log('tokenfactorycontract',myTokenContract,mcon)
     // create factory contract
     var factoryContract = new ethers.Contract(contractAddr.FACTORY_ADDRESS, FactoryABI, signer);
