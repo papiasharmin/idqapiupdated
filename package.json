@@ -11,17 +11,13 @@
         "@grpc/grpc-js": "^1.9.0",
         "@pinata/sdk": "^2.1.0",
         "alchemy-sdk": "^2.9.2",
-      
-    
         "child_process": "^1.0.2",
         "config": "^3.3.9",
-       
+        "cors": "^2.8.5",
         "dotenv": "^16.3.1",
         "ethers": "^5.7.2",
         "express": "^4.18.2",
-        
         "js-sha512": "^0.8.0",
-       
         "stripe": "^12.17.0",
         "superagent": "^8.0.9",
         "twilio": "^4.14.1"
