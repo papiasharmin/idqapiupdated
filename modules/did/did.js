@@ -3,17 +3,23 @@
  */
 
 // did用のモジュールを読み込む
-const ION = require('@decentralized-identity/ion-tools');
+const { anchor, DID, generateKeyPair } = require('@decentralized-identity/ion-tools');
+
+// node.js 18 and earlier, needs globalThis.crypto polyfill
+const webcrypto = require('node:crypto');
+// @ts-ignore
+if (!globalThis.crypto) globalThis.crypto = webcrypto;
 
 /**
  * generateDID function
  */
 const generateDID = async() => {
+      try{
       // create key pair
-      let authnKeys = await ION.generateKeyPair();
+      let authnKeys = await generateKeyPair();
       // new DID
       console.log('authkeyyyyyyyyy',authnKeys)
-      let did = new ION.DID({
+      let did = new DID({
             content: {
                   publicKeys: [
                         {
@@ -27,7 +33,7 @@ const generateDID = async() => {
                         {
                               id: 'idq',
                               type: 'LinkedDomains',
-                              serviceEndpoint: 'http://example/'
+                              serviceEndpoint: 'http://localhost:3000'
                         }
                   ]
             }
@@ -35,16 +41,21 @@ const generateDID = async() => {
 
       // anchor DID
       
-      const requestBody = await did.generateRequest();
+      const requestBody = await did.generateRequest(0);
       console.log('DIDDDDDD',did, requestBody)
-      const response =  await ION.anchor(requestBody)//ION.AnchorRequest(requestBody);
+      let response;
+      try{
+             response =  await anchor(requestBody)
+      } catch(err){}
       //console.log('req',request)
       //let response = {}//await request.submit();
 
-      return {
+         return{
             response,
             did
-      };
+         }
+   
+      } catch(err) {console.log(err)}
 };
 
 module.exports = {

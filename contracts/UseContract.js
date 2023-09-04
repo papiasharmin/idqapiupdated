@@ -67,18 +67,23 @@ const sendTx = async(abi, address, functionName, args, rpc_url, chainId) => {
     //var wallet = createKmsSigner(); // right now using alchemy sdk to get signer
     // create provider
     var provider = new ethers.providers.AlchemyProvider("maticmum",API_KEY);
-   
+    //let newprov = new ethers.providers.JsonRpcProvider('https://rpc-evm-sidechain.xrpl.org')
+    //let wal = new ethers.Wallet(PRIVATE_KEY);
     // conncet provider
+    //wal.connect(newprov)
+
+    //console.log('xrp',newprov, wal.provider, await wal.getAddress())
     wallet.connect(provider);
     const addre = await wallet.getAddress()
    
     // get nonce
     var nonce = await provider.getTransactionCount(addre, 'pending') + i;
-    
+    var gasLimit = functionName === 'createWallet' ? 2100000 : 210000
+    //let nonce = await newprov.getTransactionCount(await wal.getAddress(), 'pending')+i
     // create tx data
     var tx = {
         gasPrice: 300000000000,
-        gasLimit: 2100000,
+        gasLimit,
         data: func,
         to: address,
         nonce: nonce,
@@ -86,7 +91,7 @@ const sendTx = async(abi, address, functionName, args, rpc_url, chainId) => {
     }
     // sign tx
     var signedTransaction = await wallet.signTransaction(tx).then(ethers.utils.serializeTransaction(tx));
-
+    
     
         const res = await provider.sendTransaction(signedTransaction);
         console.log("Tx send result:", res);
