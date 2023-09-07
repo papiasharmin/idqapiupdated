@@ -60,11 +60,11 @@ const sendTx = async(abi, address, functionName, args, rpc_url, chainId) => {
         i++
     }
     try {
+        
     var contract = new ethers.utils.Interface(abi);
     // crate contract function data
     var func = contract.encodeFunctionData(functionName, args);
-    // create wallet object
-    //var wallet = createKmsSigner(); // right now using alchemy sdk to get signer
+   
     // create provider
     var provider = new ethers.providers.AlchemyProvider("maticmum",API_KEY);
     //let newprov = new ethers.providers.JsonRpcProvider('https://rpc-evm-sidechain.xrpl.org')
@@ -74,7 +74,8 @@ const sendTx = async(abi, address, functionName, args, rpc_url, chainId) => {
 
     //console.log('xrp',newprov, wal.provider, await wal.getAddress())
     wallet.connect(provider);
-    const addre = await wallet.getAddress()
+    const addre = await wallet.getAddress();
+    console.log('walletaddressssssssss',addre)
    
     // get nonce
     var nonce = await provider.getTransactionCount(addre, 'pending') + i;
@@ -190,7 +191,7 @@ const sendEth = async(to, value, rpc_url, chainId) => {
         to: to,
         nonce: nonce,
         chainId: 80001,
-        value: ethers.utils.parseEther(value.toString())._hex
+        value: new ethers.utils.parseEther(value.toString())
     }
     // sign tx
     var signedTransaction = await wallet.signTransaction(tx).then(ethers.utils.serializeTransaction(tx));

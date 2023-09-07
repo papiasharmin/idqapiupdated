@@ -16,7 +16,7 @@ if (!globalThis.crypto) globalThis.crypto = webcrypto;
 const generateDID = async() => {
       try{
       // create key pair
-      let authnKeys = await generateKeyPair();
+      let authnKeys = await generateKeyPair('secp256k1');
       // new DID
       console.log('authkeyyyyyyyyy',authnKeys)
       let did = new DID({

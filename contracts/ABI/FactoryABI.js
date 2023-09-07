@@ -345,7 +345,7 @@ const FactoryABI = `[
     "stateMutability": "nonpayable",
     "type": "function"
   }
-]`
+]`;
 
 module.exports = { 
   FactoryABI,

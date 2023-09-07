@@ -3,7 +3,7 @@ const { API_KEY } = process.env;
 
 // chain ID
 const CHAIN_ID = '80001';
-
+//ae93e2399730c5f6708fe01b075b2a76e8947245dcc602b315359e052252f0c2 c5e30a676c5bfef2c6ab4e71ef40cb0b82154caa9ee2adb686ab1dddd88b258a
 // RPC URL
 const RPC_URL =`https://polygon-mumbai.g.alchemy.com/v2/${API_KEY}`; //`https://eth-goerli.g.alchemy.com/v2/${API_KEY}`;
 const ISSUER_DID = 'https://blockcerts-20230113.storage.googleapis.com/profile.json';

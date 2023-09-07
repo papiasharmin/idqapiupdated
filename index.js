@@ -117,7 +117,7 @@ app.post('/api/burnToken', async(req, res) => {
     MyTokenABI, 
     contractAddr.MYTOKEN_ADDRESS, 
     "burnToken", 
-    [to, (amount/1000000000000000000)], 
+    [to, amount],
     RPC_URL, 
     CHAIN_ID
   );
@@ -126,7 +126,7 @@ app.post('/api/burnToken', async(req, res) => {
     // send ETH 
     var result = await sendEth(
       walletAddr, 
-      (amount/10000000000000000000000), 
+      (amount), 
       RPC_URL, 
       CHAIN_ID
     );
@@ -442,8 +442,10 @@ app.post('/api/factory/create', async(req, res) => {
 app.post('/api/wallet/submit', async(req, res) => {
   //logger.log("トランザクションを submit するための API開始");
   // 関数の引数を取得する。
+  //console.log(new ethers.utils.parseUnits( req.query.value), new ethers.utils.parseEther(req.query.value))
+  console.log('value',req.query.value )
   var to = req.query.to;
-  var value = new ethers.utils.parseUnits( req.query.value);
+  var value = new ethers.utils.parseUnits(req.query.value);
   var data = req.query.data;
   var address = req.query.address;
 
@@ -452,13 +454,9 @@ app.post('/api/wallet/submit', async(req, res) => {
     WalletABI, 
     address, 
     "submit", 
-    [
-      to,
-      value,
-      data
-    ], 
+    [to, value, data], 
     RPC_URL, 
-    CHAIN_ID
+    CHAIN_ID,
   );
     
   if(result == true) {
@@ -494,7 +492,7 @@ app.post('/api/wallet/approve', async(req, res) => {
     RPC_URL, 
     CHAIN_ID
   );
-    
+    console.log(result)
   if(result == true) {
     //logger.debug("トランザクション送信成功");
     //logger.log("トランザクションを approve するための API終了")
@@ -528,7 +526,7 @@ app.post('/api/wallet/revoke', async(req, res) => {
     RPC_URL, 
     CHAIN_ID
   );
-    
+  console.log(result)
   if(result == true) {
     //logger.debug("トランザクション送信成功");
     //logger.log("トランザクションを revoke するための API終了")
@@ -562,7 +560,7 @@ app.post('/api/wallet/execute', async(req, res) => {
     RPC_URL, 
     CHAIN_ID
   );
-    
+  console.log(result)
   if(result == true) {
     //logger.debug("トランザクション送信成功");
     //logger.log("トランザクションを execute するための API終了")

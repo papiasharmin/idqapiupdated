@@ -384,7 +384,7 @@ const WalletABI = `[
     "stateMutability": "view",
     "type": "function"
   }
-]`
+]`;
 
 module.exports = { 
   WalletABI
