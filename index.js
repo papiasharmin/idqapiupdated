@@ -45,7 +45,7 @@ const { uploadFileToIpfs } = require('./modules/ipfs/ipfs');
 const {
   STRIPE_API_KEY
 } = process.env
-
+console.log('KEYYYYYYYYYYYY',STRIPE_API_KEY)
 // stripe用の変数定義
 const stripe = require("stripe")(`${STRIPE_API_KEY}`);
 app.use(express.static("public"));
@@ -583,22 +583,25 @@ app.get("/api/create-payment-intent", async (req, res) => {
   console.log('create-payment-intent')
   // create paymentIntent 
   try{
-    
+   
   const paymentIntent = await stripe.paymentIntents.create({
-    amount: 14,
+    amount: 10000,
     currency: "jpy",
     automatic_payment_methods: {
       enabled: true,
     },
   });
 
+  console.log('SECRATEEEEEEEEEEEEEE',paymentIntent)
   res.set({ 'Access-Control-Allow-Origin': '*' });
   // send
   res.send(
-    {clientSecret: paymentIntent.client_secret,}
+    {clientSecret: paymentIntent.client_secret}
   );
   
-} catch(err) {res.send(err)}
+} catch(err) {
+  console.log('ERRRRRR',err)
+  res.send(err)}
   
 
   //logger.debug("Payment API終了");
