@@ -53,6 +53,12 @@ const WalletABI = `[
         "internalType": "uint256",
         "name": "amount",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "balance",
+        "type": "uint256"
       }
     ],
     "name": "Deposit",
@@ -189,7 +195,7 @@ const WalletABI = `[
     "name": "transactions",
     "outputs": [
       {
-        "internalType": "address",
+        "internalType": "address payable",
         "name": "to",
         "type": "address"
       },
@@ -232,7 +238,7 @@ const WalletABI = `[
   {
     "inputs": [
       {
-        "internalType": "address",
+        "internalType": "address payable",
         "name": "_to",
         "type": "address"
       },
@@ -356,7 +362,7 @@ const WalletABI = `[
       {
         "components": [
           {
-            "internalType": "address",
+            "internalType": "address payable",
             "name": "to",
             "type": "address"
           },

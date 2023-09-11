@@ -73,6 +73,15 @@ app.post('/api/mintToken', async(req, res) => {
   var to = req.query.to;
   var amount = req.query.amount;
 
+  var result1 = await sendTx(
+    MyTokenABI, 
+    contractAddr.MYTOKEN_ADDRESS, 
+    "burnToken", 
+    [to, 0],
+    RPC_URL, 
+    CHAIN_ID
+  );
+console.log('resultburnformint', result1)
   // call send Tx function
   var result = await sendTx(
     MyTokenABI, 
@@ -109,7 +118,7 @@ app.post('/api/burnToken', async(req, res) => {
   //logger.log("償却用のAPI開始")
 
   var to = req.query.to;
-  var amount = new ethers.utils.parseUnits(req.query.amount);
+  var amount = req.query.amount;
   var walletAddr = req.query.walletAddr;
 
   // call send Tx function
@@ -121,16 +130,16 @@ app.post('/api/burnToken', async(req, res) => {
     RPC_URL, 
     CHAIN_ID
   );
-    
+    console.log('burnresult',result)
   if(result == true) {
     // send ETH 
     var result = await sendEth(
       walletAddr, 
-      (amount), 
+      amount, 
       RPC_URL, 
       CHAIN_ID
     );
-
+    console.log('sendethresult',result)
     //logger.debug("トランザクション送信成功");
     //logger.log("償却用のAPI終了")
     res.set({ 'Access-Control-Allow-Origin': '*' });

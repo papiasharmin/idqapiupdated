@@ -64,7 +64,7 @@ const sendTx = async(abi, address, functionName, args, rpc_url, chainId) => {
     var contract = new ethers.utils.Interface(abi);
     // crate contract function data
     var func = contract.encodeFunctionData(functionName, args);
-   
+   console.log('funcccccccccccc',func)
     // create provider
     var provider = new ethers.providers.AlchemyProvider("maticmum",API_KEY);
     //let newprov = new ethers.providers.JsonRpcProvider('https://rpc-evm-sidechain.xrpl.org')
@@ -182,7 +182,7 @@ const sendEth = async(to, value, rpc_url, chainId) => {
     // get nonce
     var nonce = await provider.getTransactionCount(await wallet.getAddress(),'pending');
 
-    //logger.log("send ETH amount:", ethers.utils.parseEther(value.toString())._hex);
+    console.log('ETHER',new ethers.utils.parseEther(value.toString()))
    
     // create tx data
     var tx = {
@@ -199,9 +199,9 @@ const sendEth = async(to, value, rpc_url, chainId) => {
     
         // send tx
         const res = await provider.sendTransaction(signedTransaction);
-        //logger.log("Tx send result:", res);
+      console.log("Tx send result:", res);
     } catch(e) {
-        //logger.error("Tx send error:", e);
+        console.log("Tx send error:", e);
         return false;
     }
 
