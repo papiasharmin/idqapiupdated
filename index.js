@@ -166,9 +166,9 @@ app.post('/api/balance/token', async(req, res) => {
   // create provider
   //const provider = new ethers.providers.JsonRpcProvider(RPC_URL);
   // create contract 
-  var contract = new ethers.Contract(contractAddr.MYTOKEN_ADDRESS, MyTokenABI, await provider.getSigner(await wallet.getAddress()));
+  var contract = new ethers.Contract(contractAddr.MYTOKEN_ADDRESS, MyTokenABI, provider);
 
-  const balance = await contract.callStatic.balanceOf(addr);
+  const balance = await contract.balanceOf(addr);
 
   //logger.log("残高取得用のAPI終了");
   res.set({ 'Access-Control-Allow-Origin': '*' });
@@ -216,24 +216,25 @@ app.post('/api/send', async(req, res) => {
     // create provider
     //const provider = new ethers.providers.JsonRpcProvider(RPC_URL);
     // get signer 
-    const signer = await provider.getSigner(await wallet.getAddress())
+    //const signer = await provider.getSigner(await wallet.getAddress())
     // create mytoken contract 
-    var myTokenContract = new ethers.Contract(contractAddr.MYTOKEN_ADDRESS, MyTokenABI, signer);
-    var mcon =  new ethers.utils.Interface(MyTokenABI)
+    var myTokenContract = new ethers.Contract(contractAddr.MYTOKEN_ADDRESS, MyTokenABI, provider);
+    //var mcon =  new ethers.utils.Interface(MyTokenABI)
     
-    console.log('tokenfactorycontract',myTokenContract,mcon)
+    console.log('tokenfactorycontract',myTokenContract)
     // create factory contract
-    var factoryContract = new ethers.Contract(contractAddr.FACTORY_ADDRESS, FactoryABI, signer);
+    var factoryContract = new ethers.Contract(contractAddr.FACTORY_ADDRESS, FactoryABI, provider);
+    
     // get address from did
-    let fromAddr = await factoryContract.callStatic.addrs(from);
-    let receiveAddr = await factoryContract.callStatic.addrs(to);
+    let fromAddr = await factoryContract.addrs(from);
+    let receiveAddr = await factoryContract.addrs(to);
     // get addr from did
-    const balance = await myTokenContract.callStatic.balanceOf(fromAddr);
+    const balance = await myTokenContract.balanceOf(fromAddr);
   
     //logger.log("fromAddr:", fromAddr);
     //logger.log("receiveAddr:", receiveAddr);
     //logger.log("送信元のbalance:", Number(balance._hex));
-    
+    console.log('',fromAddr,receiveAddr, Number(balance._hex) ,Number(balance._hex) >= amount)
     // check balance
     if(Number(balance._hex) >= amount) {
       // 結果を格納するための変数
@@ -277,6 +278,7 @@ app.post('/api/send', async(req, res) => {
     //logger.error("トランザクション送信失敗");
     //logger.error("エラー原因：", err);
     //logger.log("token送金用のAPI終了");
+    console.log(err)
     res.set({ 'Access-Control-Allow-Origin': '*' });
     res.json({ result: 'fail' });
   }

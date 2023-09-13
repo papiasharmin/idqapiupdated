@@ -2,17 +2,36 @@ require('dotenv/config');
 const { ethers } = require('ethers');
 //const { KmsEthersSigner } = require('aws-kms-ethers-signer');
 //const log4js = require('log4js');
-//const { KEY_ID, REGION_ID } = require('../utils/constants');
+//const {  REGION_ID } = require('../utils/constants');
 // log4jsの設定
 //log4js.configure('./log/log4js_setting.json');
 //const logger = log4js.getLogger("server");
 const { Alchemy, Network, Wallet, Utils } = require("alchemy-sdk");
+//const { AwsKmsWallet } =  require('@thirdweb-dev/wallets/evm/wallets/aws-kms');
+//const AWS = require('aws-sdk');
 
-// get Mnemonic code
 // const {
 //     AWS_ACCESS_KEY_ID,
 //     AWS_SECRET_ACCESS_KEY,
+//     YOUR_KMS_KEY_ID
 // } = process.env
+
+// AWS.config.update({
+//   accessKeyId: AWS_ACCESS_KEY_ID,
+//   secretAccessKey:  AWS_SECRET_ACCESS_KEY,
+//   region: REGION_ID,
+// });
+
+
+
+// const Wallet = new AwsKmsWallet({
+//   region:REGION_ID,
+//   accessKeyId: AWS_SECRET_ACCESS_KEY,
+//   secretAccessKey: AWS_SECRET_ACCESS_KEY,
+//   sessionToken: process.env.AWS_SESSION_TOKEN,
+//   keyId: YOUR_KMS_KEY_ID,
+// });
+
 
 const { API_KEY, PRIVATE_KEY } = process.env;
 
@@ -42,6 +61,29 @@ var provider = new ethers.providers.AlchemyProvider("maticmum",API_KEY);//goerli
 
 //     return signer;
 // }
+
+// const kms = new AWS.KMS();
+
+// // Replace 'YOUR_KMS_KEY_ID' with the ID or ARN of your KMS key
+// const kmsKeyId = YOUR_KMS_KEY_ID;
+
+// const params = {
+//   KeyId: kmsKeyId,
+// };
+
+// let r = kms.getPublicKey(params, (err, data) => {
+//   if (err) {
+//     console.error('Error retrieving private key from AWS KMS:', err);
+//   } else {
+//     // Use the private key retrieved from KMS
+//     const privateKey = data.PublicKey;
+//     console.log('keyyy',privateKey)
+//     // Use the private key for signing Ethereum transactions or other cryptographic operations
+//     // ...
+//     let wallet = new Wallet(privateKey);
+//     console.log('wal', wallet);
+//   }
+// });
 
 /**
  * トランザクションを送信するメソッド
@@ -116,8 +158,9 @@ const sendBatchTx = async(txs) => {
     const count = txs.length;
     // Array for signedTx
     const signedTxs = [];
+
     try {
-    for(var i = 0; i< count; i++) {
+    for(var i = 0; i < count; i++) {
         // contract interface
         var contract = new ethers.utils.Interface(txs[i][0]);
         // crate contract function data
@@ -125,7 +168,7 @@ const sendBatchTx = async(txs) => {
         // create wallet object
         //var wallet = createKmsSigner();// using alchemy sdk
         // create provider
-        var provider = new ethers.providers.JsonRpcProvider(txs[i][4]);
+        var provider = new ethers.providers.AlchemyProvider("maticmum",API_KEY);
         // conncet provider
         wallet.connect(provider);
         // get nonce
@@ -137,7 +180,7 @@ const sendBatchTx = async(txs) => {
             data: func,
             to: txs[i][1],
             nonce: nonce,
-            chainId: txs[i][5],
+            chainId: 80001,
         }
         // sign tx
         var signedTransaction = await wallet.signTransaction(tx).then(ethers.utils.serializeTransaction(tx));
@@ -187,7 +230,7 @@ const sendEth = async(to, value, rpc_url, chainId) => {
     // create tx data
     var tx = {
         gasPrice: 250000000000,
-        gasLimit:  185000,
+        gasLimit:  210000,
         to: to,
         nonce: nonce,
         chainId: 80001,

@@ -3,61 +3,126 @@
  */
 
 // did用のモジュールを読み込む
+// const { anchor, DID, generateKeyPair } = require('@decentralized-identity/ion-tools');
+
+// import { webcrypto } from 'node:crypto';
+// // @ts-ignore
+// if (!globalThis.crypto) globalThis.crypto = webcrypto;
+
 const { anchor, DID, generateKeyPair } = require('@decentralized-identity/ion-tools');
+const { webcrypto } = require('node:crypto');
 
-// node.js 18 and earlier, needs globalThis.crypto polyfill
-const webcrypto = require('node:crypto');
-// @ts-ignore
 if (!globalThis.crypto) globalThis.crypto = webcrypto;
+// @ts-ignore
 
-/**
- * generateDID function
- */
 const generateDID = async() => {
-      try{
-      // create key pair
-      let authnKeys = await generateKeyPair('secp256k1');
-      // new DID
-      console.log('authkeyyyyyyyyy',authnKeys)
-      let did = new DID({
-            content: {
-                  publicKeys: [
-                        {
-                              id: 'key-1',
-                              type: 'EcdsaSecp256k1VerificationKey2019',
-                              publicKeyJwk: authnKeys.publicJwk,
-                              purposes: [ 'authentication' ]
-                        }
-                  ],
-                  services: [
-                        {
-                              id: 'idq',
-                              type: 'LinkedDomains',
-                              serviceEndpoint: 'http://localhost:3000'
-                        }
-                  ]
-            }
-      });
 
-      // anchor DID
+      // Generate keys and ION DID
+let authnKeys = await generateKeyPair();
+let did = new DID({
+  content: {
+    publicKeys: [
+      {
+        id: 'key-1',
+        type: 'EcdsaSecp256k1VerificationKey2019',
+        publicKeyJwk: authnKeys.publicJwk,
+        purposes: [ 'authentication' ]
+      }
+    ],
+    services: [
+      {
+        id: 'domain-1',
+        type: 'LinkedDomains',
+        serviceEndpoint: 'https://foo.example.com'
+      }
+    ]
+  }
+});
+
+// Generate and publish create request to an ION node
+let anchorResponse;
+
+try{
+      let state = await did.getState()
+      let op = await did.getAllOperations()
+      let suf = await did.getSuffix()
+      let uri = await did.getURI()
+      let createRequest = await did.generateRequest( );
+      console.log('allinfpooooooooooooooo',state,op,suf,uri,createRequest)
+       anchorResponse = await anchor(createRequest);
+
+
+
+} catch(err){console.log('err during register',err)}
+            //console.log('req',request)
+            //let response = {}//await request.submit();
       
-      const requestBody = await did.generateRequest(0);
-      console.log('DIDDDDDD',did, requestBody)
-      let response;
-      try{
-             response =  await anchor(requestBody)
-      } catch(err){}
-      //console.log('req',request)
-      //let response = {}//await request.submit();
+            return{
+                  anchorResponse,
+                  did
+            }
 
-         return{
-            response,
-            did
-         }
-   
-      } catch(err) {console.log(err)}
 };
 
 module.exports = {
       generateDID
 }
+
+
+
+
+// // Store the key material and source data of all operations that have been created for the DID
+// let ionOps = await did.getAllOperations();
+// await writeFile('./ion-did-ops-v1.json', JSON.stringify({ ops: ionOps }));
+
+// /**
+//  * generateDID function
+//  */
+// const generateDID = async() => {
+//       try{
+//       // create key pair
+//       let authnKeys = await generateKeyPair('secp256k1');
+//       // new DID
+//       console.log('authkeyyyyyyyyy',authnKeys)
+//       let did = new DID({
+//             content: {
+//                   publicKeys: [
+//                         {
+//                               id: 'key-1',
+//                               type: 'EcdsaSecp256k1VerificationKey2019',
+//                               publicKeyJwk: authnKeys.publicJwk,
+//                               purposes: [ 'authentication' ]
+//                         }
+//                   ],
+//                   services: [
+//                         {
+//                               id: 'idq',
+//                               type: 'LinkedDomains',
+//                               serviceEndpoint: 'http://localhost:3000'
+//                         }
+//                   ]
+//             }
+//       });
+
+//       // anchor DID
+      
+//       const requestBody = await did.generateRequest(0);
+//       console.log('DIDDDDDD',did, requestBody)
+//       let response;
+//       try{
+//              response =  await anchor(requestBody)
+//       } catch(err){}
+//       //console.log('req',request)
+//       //let response = {}//await request.submit();
+
+//          return{
+//             response,
+//             did
+//          }
+   
+//       } catch(err) {console.log(err)}
+// };
+
+// module.exports = {
+//       generateDID
+// }
