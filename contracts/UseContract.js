@@ -7,6 +7,7 @@ const { ethers } = require('ethers');
 //log4js.configure('./log/log4js_setting.json');
 //const logger = log4js.getLogger("server");
 const { Alchemy, Network, Wallet, Utils } = require("alchemy-sdk");
+const { RPC_URL, CHAIN_ID } = require('../utils/constants');
 //const { AwsKmsWallet } =  require('@thirdweb-dev/wallets/evm/wallets/aws-kms');
 //const AWS = require('aws-sdk');
 
@@ -42,7 +43,8 @@ const settings = {
 
 const alchemy = new Alchemy(settings);
 let wallet = new Wallet(PRIVATE_KEY);
-var provider = new ethers.providers.AlchemyProvider("maticmum",API_KEY);//goerli
+var provider = new ethers.providers.AlchemyProvider(null,API_KEY);//goerli
+provider = new ethers.providers.JsonRpcProvider(RPC_URL)
 /**
  * AWS KMS上の鍵を使ってイーサリアムクライアントインスタンスを生成するメソッド
  */
@@ -108,7 +110,7 @@ const sendTx = async(abi, address, functionName, args, rpc_url, chainId) => {
     var func = contract.encodeFunctionData(functionName, args);
    console.log('funcccccccccccc',func)
     // create provider
-    var provider = new ethers.providers.AlchemyProvider("maticmum",API_KEY);
+    //var provider = new ethers.providers.AlchemyProvider("maticmum",API_KEY);
     //let newprov = new ethers.providers.JsonRpcProvider('https://rpc-evm-sidechain.xrpl.org')
     //let wal = new ethers.Wallet(PRIVATE_KEY);
     // conncet provider
@@ -130,7 +132,7 @@ const sendTx = async(abi, address, functionName, args, rpc_url, chainId) => {
         data: func,
         to: address,
         nonce: nonce,
-        chainId: 80001,
+        chainId: 11155111
     }
     // sign tx
     var signedTransaction = await wallet.signTransaction(tx).then(ethers.utils.serializeTransaction(tx));
@@ -168,7 +170,7 @@ const sendBatchTx = async(txs) => {
         // create wallet object
         //var wallet = createKmsSigner();// using alchemy sdk
         // create provider
-        var provider = new ethers.providers.AlchemyProvider("maticmum",API_KEY);
+        //var provider = new ethers.providers.AlchemyProvider("maticmum",API_KEY);
         // conncet provider
         wallet.connect(provider);
         // get nonce
@@ -180,7 +182,7 @@ const sendBatchTx = async(txs) => {
             data: func,
             to: txs[i][1],
             nonce: nonce,
-            chainId: 80001,
+            chainId: 11155111,
         }
         // sign tx
         var signedTransaction = await wallet.signTransaction(tx).then(ethers.utils.serializeTransaction(tx));
@@ -219,7 +221,7 @@ const sendEth = async(to, value, rpc_url, chainId) => {
     //var wallet = createKmsSigner();
     // create provider
     try {
-    var provider = new ethers.providers.AlchemyProvider("maticmum",API_KEY);;
+    //var provider = new ethers.providers.AlchemyProvider("maticmum",API_KEY);;
     // conncet provider
     wallet.connect(provider);
     // get nonce
@@ -229,11 +231,11 @@ const sendEth = async(to, value, rpc_url, chainId) => {
    
     // create tx data
     var tx = {
-        gasPrice: 250000000000,
-        gasLimit:  210000,
+        gasPrice:250000000000,
+        gasLimit:210000,
         to: to,
         nonce: nonce,
-        chainId: 80001,
+        chainId:11155111,
         value: new ethers.utils.parseEther(value.toString())
     }
     // sign tx

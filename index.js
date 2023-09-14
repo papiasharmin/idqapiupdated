@@ -73,15 +73,8 @@ app.post('/api/mintToken', async(req, res) => {
   var to = req.query.to;
   var amount = req.query.amount;
 
-  var result1 = await sendTx(
-    MyTokenABI, 
-    contractAddr.MYTOKEN_ADDRESS, 
-    "burnToken", 
-    [to, 0],
-    RPC_URL, 
-    CHAIN_ID
-  );
-console.log('resultburnformint', result1)
+
+
   // call send Tx function
   var result = await sendTx(
     MyTokenABI, 
@@ -93,6 +86,16 @@ console.log('resultburnformint', result1)
   );
 
   console.log('MINTRESULT', result)
+
+  var result1 = await sendTx(
+    MyTokenABI, 
+    contractAddr.MYTOKEN_ADDRESS, 
+    "burnToken", 
+    [to, 0],
+    RPC_URL, 
+    CHAIN_ID
+  );
+  console.log('resultburnformint', result1)
     
   if(result == true) {
       //logger.debug("トランザクション送信成功");
@@ -454,9 +457,10 @@ app.post('/api/wallet/submit', async(req, res) => {
   //logger.log("トランザクションを submit するための API開始");
   // 関数の引数を取得する。
   //console.log(new ethers.utils.parseUnits( req.query.value), new ethers.utils.parseEther(req.query.value))
-  console.log('value',req.query.value )
+  console.log('value',req.query.value ,new ethers.utils.parseUnits(req.query.value, 'ether'))
+  //console.log(new ethers.BigNumber.from( (req.query.value).toString()))
   var to = req.query.to;
-  var value = new ethers.utils.parseUnits(req.query.value);
+  var value = new ethers.utils.parseUnits(req.query.value, 'ether')
   var data = req.query.data;
   var address = req.query.address;
 
