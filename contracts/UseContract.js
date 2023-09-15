@@ -132,7 +132,7 @@ const sendTx = async(abi, address, functionName, args, rpc_url, chainId) => {
         data: func,
         to: address,
         nonce: nonce,
-        chainId: 11155111
+        chainId: 80001
     }
     // sign tx
     var signedTransaction = await wallet.signTransaction(tx).then(ethers.utils.serializeTransaction(tx));
@@ -182,7 +182,7 @@ const sendBatchTx = async(txs) => {
             data: func,
             to: txs[i][1],
             nonce: nonce,
-            chainId: 11155111,
+            chainId: 80001
         }
         // sign tx
         var signedTransaction = await wallet.signTransaction(tx).then(ethers.utils.serializeTransaction(tx));
@@ -201,7 +201,7 @@ const sendBatchTx = async(txs) => {
             //logger.log("Tx send result:", res);
         }
     } catch(e) {
-        //logger.error("Tx send error:", e);
+        console.log("Tx send error:", e);
         return false;
     }
 
@@ -235,7 +235,7 @@ const sendEth = async(to, value, rpc_url, chainId) => {
         gasLimit:210000,
         to: to,
         nonce: nonce,
-        chainId:11155111,
+        chainId: 80001,
         value: new ethers.utils.parseEther(value.toString())
     }
     // sign tx

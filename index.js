@@ -6,7 +6,7 @@ const { ethers } = require('ethers');
 // 暗号化用のモジュールを読み込む
 //const crypto = require('crypto');
 // did用のモジュールを読み込む
-const ION = require('@decentralized-identity/ion-tools')
+const { ION, sign, verify, resolve} = require('@decentralized-identity/ion-tools');
 
 const cors = require('cors');
 
@@ -72,8 +72,6 @@ app.post('/api/mintToken', async(req, res) => {
 
   var to = req.query.to;
   var amount = req.query.amount;
-
-
 
   // call send Tx function
   var result = await sendTx(
@@ -360,14 +358,14 @@ app.get('/api/resolve', async(req, res) => {
 });
     
 /**
- * DIDを利用して署名処理するAPI
+ * DIDを利用して署名処理するAPI API for signature processing using DID
  */
 app.post('/api/sign', async(req, res) => {
   // TO-DO
 });
     
 /**
- * DIDを利用して署名検証するAPI
+ * DIDを利用して署名検証するAPI  API to verify signature using DID
  */
 app.post('/api/verify', async(req, res) => {
   // TO-DO
@@ -454,17 +452,24 @@ app.post('/api/factory/create', async(req, res) => {
  * @param address ウォレットアドレス
  */
 app.post('/api/wallet/submit', async(req, res) => {
-  //logger.log("トランザクションを submit するための API開始");
-  // 関数の引数を取得する。
-  //console.log(new ethers.utils.parseUnits( req.query.value), new ethers.utils.parseEther(req.query.value))
-  console.log('value',req.query.value ,new ethers.utils.parseUnits(req.query.value, 'ether'))
-  //console.log(new ethers.BigNumber.from( (req.query.value).toString()))
+
   var to = req.query.to;
   var value = new ethers.utils.parseUnits(req.query.value, 'ether')
   var data = req.query.data;
   var address = req.query.address;
+  var sender = req.query.sender;
+
+  var walletContract = new ethers.Contract(address, WalletABI, provider);
+    
+  // get address from did
+  let isowner = await walletContract.verifyOwner(sender);
+
+  // const jws = await sign({ payload: 'hello world', privateJwk });
+  // const isLegit =  verify({ jws, publicJwk });
+  // const didDoc = await resolve(longFormDID);
 
   // call send Tx function
+  if(isowner){
   var result = await sendTx(
     WalletABI, 
     address, 
@@ -485,6 +490,7 @@ app.post('/api/wallet/submit', async(req, res) => {
     res.set({ 'Access-Control-Allow-Origin': '*' });
     res.json({ result: 'fail' });
   }
+}
 });
 
 /**
@@ -497,13 +503,24 @@ app.post('/api/wallet/approve', async(req, res) => {
   // 関数の引数を取得する。
   var txId = req.query.txId;
   var address = req.query.address;
+  var sender = req.query.sender;
+
+  var walletContract = new ethers.Contract(address, WalletABI, provider);
+    
+  // get address from did
+  let isowner = await walletContract.verifyOwner(sender);
+
+  // const jws = await sign({ payload: 'hello world', privateJwk });
+  // const isLegit = verify({ jws, publicJwk });
+  // const didDoc = await resolve(longFormDID);
 
   // call send Tx function
+  if(isowner){
   var result = await sendTx(
     WalletABI, 
     address, 
     "approve", 
-    [txId], 
+    [txId, sender], 
     RPC_URL, 
     CHAIN_ID
   );
@@ -519,6 +536,7 @@ app.post('/api/wallet/approve', async(req, res) => {
     res.set({ 'Access-Control-Allow-Origin': '*' });
     res.json({ result: 'fail' });
   }
+}
 });
 
 /**
@@ -531,13 +549,24 @@ app.post('/api/wallet/revoke', async(req, res) => {
   // 関数の引数を取得する。
   var txId = req.query.txId;
   var address = req.query.address;
+  var sender = req.query.sender;
+  
+  var walletContract = new ethers.Contract(address, WalletABI, provider);
+    
+  // get address from did
+  let isowner = await walletContract.verifyOwner(sender);
+
+  // const jws = await sign({ payload: 'hello world', privateJwk });
+  // const isLegit = await verify({ jws, publicJwk });
+  // const didDoc = await resolve(longFormDID);
 
   // call send Tx function
+  if(isowner){
   var result = await sendTx(
     WalletABI, 
     address, 
     "revoke", 
-    [txId], 
+    [txId, sender], 
     RPC_URL, 
     CHAIN_ID
   );
@@ -553,6 +582,7 @@ app.post('/api/wallet/revoke', async(req, res) => {
     res.set({ 'Access-Control-Allow-Origin': '*' });
     res.json({ result: 'fail' });
   }
+}
 });
 
 /**
@@ -565,6 +595,10 @@ app.post('/api/wallet/execute', async(req, res) => {
   // 関数の引数を取得する。
   var txId = req.query.txId;
   var address = req.query.address;
+
+  const jws = await sign({ payload: 'hello world', privateJwk });
+  const isLegit = verify({ jws, publicJwk });
+  const didDoc = await resolve(longFormDID);
 
   // call send Tx function
   var result = await sendTx(

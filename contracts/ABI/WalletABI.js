@@ -12,6 +12,11 @@ const WalletABI = `[
         "type": "address[]"
       },
       {
+        "internalType": "address",
+        "name": "_singleAuthority",
+        "type": "address"
+      },
+      {
         "internalType": "uint256",
         "name": "_required",
         "type": "uint256"
@@ -26,7 +31,7 @@ const WalletABI = `[
       {
         "indexed": true,
         "internalType": "address",
-        "name": "owner",
+        "name": "sender",
         "type": "address"
       },
       {
@@ -83,7 +88,7 @@ const WalletABI = `[
       {
         "indexed": true,
         "internalType": "address",
-        "name": "owner",
+        "name": "sender",
         "type": "address"
       },
       {
@@ -185,6 +190,19 @@ const WalletABI = `[
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "singleAuthority",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "uint256",
@@ -264,6 +282,11 @@ const WalletABI = `[
         "internalType": "uint256",
         "name": "_txId",
         "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "owneradd",
+        "type": "address"
       }
     ],
     "name": "approve",
@@ -363,6 +386,25 @@ const WalletABI = `[
         "internalType": "address[]",
         "name": "",
         "type": "address[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_sender",
+        "type": "address"
+      }
+    ],
+    "name": "verifyOwner",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
       }
     ],
     "stateMutability": "view",

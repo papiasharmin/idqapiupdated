@@ -3,13 +3,9 @@
  */
 
 // did用のモジュールを読み込む
-// const { anchor, DID, generateKeyPair } = require('@decentralized-identity/ion-tools');
 
-// import { webcrypto } from 'node:crypto';
-// // @ts-ignore
-// if (!globalThis.crypto) globalThis.crypto = webcrypto;
 
-const { anchor, DID, generateKeyPair } = require('@decentralized-identity/ion-tools');
+const { anchor, DID, generateKeyPair, sign, verify, resolve} = require('@decentralized-identity/ion-tools');
 const { webcrypto } = require('node:crypto');
 
 if (!globalThis.crypto) globalThis.crypto = webcrypto;
@@ -18,14 +14,14 @@ if (!globalThis.crypto) globalThis.crypto = webcrypto;
 const generateDID = async() => {
 
       // Generate keys and ION DID
-let authnKeys = await generateKeyPair();
+let { publicJwk, privateJwk}= await generateKeyPair();
 let did = new DID({
   content: {
     publicKeys: [
       {
         id: 'key-1',
         type: 'EcdsaSecp256k1VerificationKey2019',
-        publicKeyJwk: authnKeys.publicJwk,
+        publicKeyJwk: publicJwk,
         purposes: [ 'authentication' ]
       }
     ],
@@ -33,7 +29,7 @@ let did = new DID({
       {
         id: 'domain-1',
         type: 'LinkedDomains',
-        serviceEndpoint: 'https://foo.example.com'
+        serviceEndpoint: 'https://idq-api.vercel.app'
       }
     ]
   }
@@ -42,14 +38,17 @@ let did = new DID({
 // Generate and publish create request to an ION node
 let anchorResponse;
 
+let createRequest;
 try{
-      let state = await did.getState()
-      let op = await did.getAllOperations()
-      let suf = await did.getSuffix()
+    
       let uri = await did.getURI()
-      let createRequest = await did.generateRequest( );
-      console.log('allinfpooooooooooooooo',state,op,suf,uri,createRequest)
-       anchorResponse = await anchor(createRequest);
+      createRequest = await did.generateRequest();
+      
+      const jws = await sign({ payload: 'hello world', privateJwk });
+      const isLegit =  verify({ jws, publicJwk });
+      const didDoc = await resolve(longFormDID);
+      console.log('allinfpooooooooooooooo',isLegit, didDoc, createRequest)
+      anchorResponse = await anchor(createRequest,{challengeEndpoint:'https://beta.ion.msidentity.com'});
 
 
 
@@ -58,7 +57,7 @@ try{
             //let response = {}//await request.submit();
       
             return{
-                  anchorResponse,
+                  createRequest,
                   did
             }
 

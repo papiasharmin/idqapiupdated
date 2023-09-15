@@ -5,7 +5,7 @@ const { API_KEY } = process.env;
 const CHAIN_ID = '11155111';
 //ae93e2399730c5f6708fe01b075b2a76e8947245dcc602b315359e052252f0c2 c5e30a676c5bfef2c6ab4e71ef40cb0b82154caa9ee2adb686ab1dddd88b258a 7f438d21c3ac2b37521d200d2bde9b329a1fdd29e1d3d95727227d878f9c38fd
 // RPC URL
-const RPC_URL = `https://eth-sepolia.g.alchemy.com/v2/3fMr3CwsUtbgtcenWRgX9A0Cx9tkOfVr`;//`https://polygon-mumbai.g.alchemy.com/v2/${API_KEY}`; //`https://eth-goerli.g.alchemy.com/v2/${API_KEY}`;
+const RPC_URL = `https://polygon-mumbai.g.alchemy.com/v2/${API_KEY}`;//`https://eth-sepolia.g.alchemy.com/v2/3fMr3CwsUtbgtcenWRgX9A0Cx9tkOfVr`;// //`https://eth-goerli.g.alchemy.com/v2/${API_KEY}`;
 const ISSUER_DID = 'https://blockcerts-20230113.storage.googleapis.com/profile.json';
 const CONTROLLER = 'did:web:blockcerts-20230113.storage.googleapis.com';
 
