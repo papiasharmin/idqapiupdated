@@ -7,7 +7,9 @@ const { ethers } = require('ethers');
 //const crypto = require('crypto');
 // did用のモジュールを読み込む
 const { ION, sign, verify, resolve} = require('@decentralized-identity/ion-tools');
-
+const Moralis = require("moralis").default;
+const { EvmChain } = require("@moralisweb3/common-evm-utils");
+const sdk = require('api')('@chainbase/v1.0#5ryqsfllox7m1a');
 const cors = require('cors');
 
 
@@ -71,6 +73,7 @@ app.post('/api/mintToken', async(req, res) => {
   console.log("発行用のAPI開始");
 
   var to = req.query.to;
+
   var amount = req.query.amount;
 
   // call send Tx function
@@ -300,9 +303,9 @@ app.post('/api/create', async(req, res) => {
     did
   } = await generateDID();
   
-  //logger.log("response:", response);
+  console.log("response:", response);
   // upload to ipfs
-  await uploadFileToIpfs(response, addr);
+  //await uploadFileToIpfs(response, addr);
   
   // get DID URL
   const didUrl = await did.getURI('short');
@@ -321,13 +324,39 @@ app.post('/api/create', async(req, res) => {
     );
 
     console.log('RESULT',result)
+    const fetchdata = async ()=>{
+      try {
+        await Moralis.start({
+          apiKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6IjM1MGM4ZTRkLWIzN2MtNGRmZS05MGUxLWU1ZjIzYjQ1NWQ2NCIsIm9yZ0lkIjoiMzU2OTYwIiwidXNlcklkIjoiMzY2ODcxIiwidHlwZUlkIjoiMmRkNDI4NTMtOTc4Zi00MmRhLTk1ZWItNWVmZGNkNjVlZjcwIiwidHlwZSI6IlBST0pFQ1QiLCJpYXQiOjE2OTQ1OTA4MjUsImV4cCI6NDg1MDM1MDgyNX0.y_P3lxBtqf7t92VFfLXXQB2SB7D7TjtSy3VyU5kImdo"
+        });
+        const address = "0x80d6c044a4b9c1D969673cA750B669ADAAD9d5fe";//0x80d6c044a4b9c1D969673cA750B669ADAAD9d5fe
+        const chain = EvmChain.ETHEREUM;
+      
+        const response = await Moralis.EvmApi.token.getTokenPrice({
+            address,
+            chain
+        });
+      
+        console.log(response.raw);
+        return response.raw
+      } catch (e) {
+        console.error(e);
+      }
+  //   sdk.getTokenPrice({
+  //     chain_id: '80001',
+  //     contract_address: '0x8AE069aCb6ddF7B32b92fef419d30c30e4ED9D95',
+  //     'x-api-key': '2VrlEPODPj5hXk6qdti7x061U4r'
+  //   })
+  //     .then(({ data }) => console.log(data))
+  //     .catch(err => console.error(err));
+   }
+    
 
     if(result == true) {
-      //logger.debug("トランザクション送信成功");
-      //logger.log("DID作成用のAPI終了")
-      //logger.log("DID:", didUrl);
-      res.set({ 'Access-Control-Allow-Origin': '*' });
-      res.json({ result: 'success' });
+    //  let data = await fetchdata()
+    //  console.log('DATAAAA',data)
+      res.send({data:""})
+   
     } else {
       //logger.error("トランザクション送信失敗");
       //logger.log("DID作成用のAPI終了")
@@ -338,9 +367,65 @@ app.post('/api/create', async(req, res) => {
       //logger.error("トランザクション送信失敗");
       //logger.error("エラー詳細：", err);
       //logger.log("DID作成用のAPI終了")
+      console.log(err)
       res.set({ 'Access-Control-Allow-Origin': '*' });
       res.json({ result: 'fail' });
   }
+});
+
+
+///////////////////////////////
+app.post('/api/createuser', async(req, res) => {
+  let wallet = ethers.Wallet.createRandom()
+  let addr = await wallet.getAddress();
+  var pass = req.query.password;
+  console.log('pass',addr, pass)
+  
+  try {
+    // set to Factory contract
+    var result = await sendTx(
+      FactoryABI, 
+      contractAddr.FACTORY_ADDRESS, 
+      "creatUser", 
+      [addr, pass], 
+      RPC_URL, 
+      CHAIN_ID
+    );
+
+    console.log('RESULT',result)
+
+    if(result == true) {
+      res.send({addr: addr})
+   
+      
+    } else {
+      res.set({ 'Access-Control-Allow-Origin': '*' });
+      res.json({ result: 'fail' });
+    }
+  } catch(err) {
+      res.set({ 'Access-Control-Allow-Origin': '*' });
+      res.json({ result: 'fail' });
+  }
+  
+});
+
+app.post('/api/login', async(req, res) => {
+  var pass = req.query.password;
+
+  var factoryContract = new ethers.Contract(contractAddr.FACTORY_ADDRESS, FactoryABI, provider);
+    
+  // get address from did
+  let frompassaddr = await factoryContract.pass(pass);
+
+  console.log('pass',frompassaddr, pass)
+  
+    if(frompassaddr) {
+     
+      res.send({addr: frompassaddr})
+    } else {
+   
+    }
+  
 });
     
     
@@ -458,12 +543,12 @@ app.post('/api/wallet/submit', async(req, res) => {
   var data = req.query.data;
   var address = req.query.address;
   var sender = req.query.sender;
-
+  console.log('TXDATA',to,value,data,address,sender)
   var walletContract = new ethers.Contract(address, WalletABI, provider);
-    
+  console.log('CONTRACT',walletContract)
   // get address from did
   let isowner = await walletContract.verifyOwner(sender);
-
+  console.log('isowner',isowner)
   // const jws = await sign({ payload: 'hello world', privateJwk });
   // const isLegit =  verify({ jws, publicJwk });
   // const didDoc = await resolve(longFormDID);
@@ -550,7 +635,7 @@ app.post('/api/wallet/revoke', async(req, res) => {
   var txId = req.query.txId;
   var address = req.query.address;
   var sender = req.query.sender;
-  
+
   var walletContract = new ethers.Contract(address, WalletABI, provider);
     
   // get address from did
@@ -575,7 +660,7 @@ app.post('/api/wallet/revoke', async(req, res) => {
     //logger.debug("トランザクション送信成功");
     //logger.log("トランザクションを revoke するための API終了")
     res.set({ 'Access-Control-Allow-Origin': '*' });
-    res.json({ result: 'success' });
+  
   } else {
     //logger.error("トランザクション送信失敗");
     //logger.error("トランザクションを revoke するための API終了")
@@ -596,9 +681,9 @@ app.post('/api/wallet/execute', async(req, res) => {
   var txId = req.query.txId;
   var address = req.query.address;
 
-  const jws = await sign({ payload: 'hello world', privateJwk });
-  const isLegit = verify({ jws, publicJwk });
-  const didDoc = await resolve(longFormDID);
+  // const jws = await sign({ payload: 'hello world', privateJwk });
+  // const isLegit = verify({ jws, publicJwk });
+  // const didDoc = await resolve(longFormDID);
 
   // call send Tx function
   var result = await sendTx(
@@ -714,5 +799,4 @@ process.on('SIGINT', () => {
 
 
 
-
-//module.exports = server;
+///api/login

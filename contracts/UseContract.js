@@ -45,6 +45,7 @@ const alchemy = new Alchemy(settings);
 let wallet = new Wallet(PRIVATE_KEY);
 var provider = new ethers.providers.AlchemyProvider(null,API_KEY);//goerli
 provider = new ethers.providers.JsonRpcProvider(RPC_URL)
+
 /**
  * AWS KMS上の鍵を使ってイーサリアムクライアントインスタンスを生成するメソッド
  */
@@ -100,9 +101,9 @@ provider = new ethers.providers.JsonRpcProvider(RPC_URL)
 const sendTx = async(abi, address, functionName, args, rpc_url, chainId) => {
     // contract interface
     var i = 0;
-    if(functionName === 'mint'){
-        i++
-    }
+    // if(functionName === 'mint'){
+    //     i++
+    // }
     try {
         
     var contract = new ethers.utils.Interface(abi);
@@ -132,7 +133,7 @@ const sendTx = async(abi, address, functionName, args, rpc_url, chainId) => {
         data: func,
         to: address,
         nonce: nonce,
-        chainId: 80001
+        chainId: CHAIN_ID
     }
     // sign tx
     var signedTransaction = await wallet.signTransaction(tx).then(ethers.utils.serializeTransaction(tx));
@@ -182,7 +183,7 @@ const sendBatchTx = async(txs) => {
             data: func,
             to: txs[i][1],
             nonce: nonce,
-            chainId: 80001
+            chainId: CHAIN_ID
         }
         // sign tx
         var signedTransaction = await wallet.signTransaction(tx).then(ethers.utils.serializeTransaction(tx));
@@ -235,7 +236,7 @@ const sendEth = async(to, value, rpc_url, chainId) => {
         gasLimit:210000,
         to: to,
         nonce: nonce,
-        chainId: 80001,
+        chainId: CHAIN_ID,
         value: new ethers.utils.parseEther(value.toString())
     }
     // sign tx

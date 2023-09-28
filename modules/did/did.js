@@ -6,7 +6,7 @@
 
 
 const { anchor, DID, generateKeyPair, sign, verify, resolve} = require('@decentralized-identity/ion-tools');
-const { webcrypto } = require('node:crypto');
+const { webcrypto } = require('crypto');
 
 if (!globalThis.crypto) globalThis.crypto = webcrypto;
 // @ts-ignore
@@ -19,19 +19,19 @@ let did = new DID({
   content: {
     publicKeys: [
       {
-        id: 'key-1',
-        type: 'EcdsaSecp256k1VerificationKey2019',
+        id: "key-1",
+        type: "EcdsaSecp256k1VerificationKey2019",
         publicKeyJwk: publicJwk,
-        purposes: [ 'authentication' ]
-      }
+        purposes: ["authentication"],
+      },
     ],
     services: [
       {
-        id: 'domain-1',
-        type: 'LinkedDomains',
-        serviceEndpoint: 'https://idq-api.vercel.app'
-      }
-    ]
+        id: "domain-1",
+        type: "LinkedDomains",
+        serviceEndpoint: "https://foo.example.com",
+      },
+    ],
   }
 });
 
@@ -42,18 +42,21 @@ let createRequest;
 try{
     
       let uri = await did.getURI()
+      console.log('URIII',uri)
       createRequest = await did.generateRequest();
-      
-      const jws = await sign({ payload: 'hello world', privateJwk });
-      const isLegit =  verify({ jws, publicJwk });
-      const didDoc = await resolve(longFormDID);
-      console.log('allinfpooooooooooooooo',isLegit, didDoc, createRequest)
-      anchorResponse = await anchor(createRequest,{challengeEndpoint:'https://beta.ion.msidentity.com'});
-
+      console.log('REQUEST',createRequest)
+      // const jws = await sign({ payload: 'hello world', privateJwk });
+      // console.log('JWS',jws)
+      // const isLegit =  verify({ jws, publicJwk });
+      // console.log('BOOL',isLegit)
+      const didDoc = await resolve(uri);
+      console.log('DIDDOC', didDoc)
+      anchorResponse = await anchor(createRequest);
+      console.log('REQUEST',anchorResponse)
 
 
 } catch(err){console.log('err during register',err)}
-            //console.log('req',request)
+            //console.log('req',request)npm 
             //let response = {}//await request.submit();
       
             return{
