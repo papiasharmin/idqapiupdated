@@ -565,13 +565,11 @@ app.post('/api/wallet/submit', async(req, res) => {
   );
     
   if(result == true) {
-    //logger.debug("トランザクション送信成功");
-    //logger.log("トランザクションを submit するための API終了")
+
     res.set({ 'Access-Control-Allow-Origin': '*' });
     res.json({ result: 'success' });
   } else {
-    //logger.error("トランザクション送信失敗");
-    //logger.error("トランザクションを submit するための API終了")
+ 
     res.set({ 'Access-Control-Allow-Origin': '*' });
     res.json({ result: 'fail' });
   }
