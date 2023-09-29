@@ -582,7 +582,7 @@ app.post('/api/wallet/submit', async(req, res) => {
  * @param address ウォレットアドレス
  */
 app.post('/api/wallet/approve', async(req, res) => {
-  //logger.log("トランザクションを approve するための API開始");
+  
   // 関数の引数を取得する。
   var txId = req.query.txId;
   var address = req.query.address;
