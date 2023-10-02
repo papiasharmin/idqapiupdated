@@ -45,10 +45,7 @@ try{
       console.log('URIII',uri)
       createRequest = await did.generateRequest();
       console.log('REQUEST',createRequest)
-      // const jws = await sign({ payload: 'hello world', privateJwk });
-      // console.log('JWS',jws)
-      // const isLegit =  verify({ jws, publicJwk });
-      // console.log('BOOL',isLegit)
+
       const didDoc = await resolve(uri);
       console.log('DIDDOC', didDoc)
       anchorResponse = await anchor(createRequest);
@@ -56,8 +53,7 @@ try{
 
 
 } catch(err){console.log('err during register',err)}
-            //console.log('req',request)npm 
-            //let response = {}//await request.submit();
+ 
       
             return{
                   createRequest,
