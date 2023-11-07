@@ -26,7 +26,7 @@ const sendTx = async(abi, address, functionName, args, rpc_url, chainId) => {
     var contract = new ethers.utils.Interface(abi);
     // crate contract function data
     var func = contract.encodeFunctionData(functionName, args);
-
+    
     wallet.connect(provider);
     const addre = await wallet.getAddress();
    

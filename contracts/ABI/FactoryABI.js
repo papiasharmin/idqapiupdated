@@ -47,6 +47,12 @@ const FactoryABI = `[
     "inputs": [
       {
         "indexed": false,
+        "internalType": "string",
+        "name": "data",
+        "type": "string"
+      },
+      {
+        "indexed": false,
         "internalType": "address",
         "name": "addr",
         "type": "address"
@@ -54,7 +60,7 @@ const FactoryABI = `[
       {
         "indexed": false,
         "internalType": "string",
-        "name": "qrdata",
+        "name": "privatekey",
         "type": "string"
       }
     ],
@@ -174,12 +180,12 @@ const FactoryABI = `[
         "type": "string"
       }
     ],
-    "name": "pass",
+    "name": "userExist",
     "outputs": [
       {
-        "internalType": "address",
+        "internalType": "bool",
         "name": "",
-        "type": "address"
+        "type": "bool"
       }
     ],
     "stateMutability": "view",
@@ -192,14 +198,24 @@ const FactoryABI = `[
         "internalType": "string",
         "name": "",
         "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       }
     ],
-    "name": "userExist",
+    "name": "users",
     "outputs": [
       {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
+        "internalType": "address",
+        "name": "addr",
+        "type": "address"
+      },
+      {
+        "internalType": "string",
+        "name": "privatekey",
+        "type": "string"
       }
     ],
     "stateMutability": "view",
@@ -321,6 +337,19 @@ const FactoryABI = `[
   {
     "inputs": [
       {
+        "internalType": "uint256",
+        "name": "index",
+        "type": "uint256"
+      }
+    ],
+    "name": "deleteWallets",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "address",
         "name": "_addr",
         "type": "address"
@@ -339,13 +368,18 @@ const FactoryABI = `[
   {
     "inputs": [
       {
+        "internalType": "string",
+        "name": "_data",
+        "type": "string"
+      },
+      {
         "internalType": "address",
         "name": "_addr",
         "type": "address"
       },
       {
         "internalType": "string",
-        "name": "_pass",
+        "name": "_privatekey",
         "type": "string"
       }
     ],
@@ -353,6 +387,38 @@ const FactoryABI = `[
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_data",
+        "type": "string"
+      }
+    ],
+    "name": "getUser",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "addr",
+            "type": "address"
+          },
+          {
+            "internalType": "string",
+            "name": "privatekey",
+            "type": "string"
+          }
+        ],
+        "internalType": "struct WalletFactoryV4.userInfo[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
   },
   {
     "inputs": [

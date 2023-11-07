@@ -4,7 +4,8 @@ const app = express();
 const { ethers } = require('ethers');
 const { ION} = require('@decentralized-identity/ion-tools');
 const cors = require('cors');
-
+//const cardimg = require('./images/cardimg.jpg')
+const ThirdwebSDK = require('@thirdweb-dev/sdk')
 // Load blockchain functionality module
 const {
   sendTx,
@@ -23,7 +24,8 @@ const contractAddr = require('./contracts/Address');
 // get contants 
 const {
   RPC_URL,
-  CHAIN_ID
+  CHAIN_ID,
+  LOYALTY_CONTRACT_ADRESS
 } = require('./utils/constants');
 const { generateDID } = require('./modules/did/did');
 const { uploadFileToIpfs } = require('./modules/ipfs/ipfs');
@@ -275,8 +277,15 @@ app.post('/api/create', async(req, res) => {
 ///////////////////////////////
 app.post('/api/createuser', async(req, res) => {
   const wallet = ethers.Wallet.createRandom()
+  wallet.connect(provider);
+
   const addr = await wallet.getAddress();
-  const pass = req.query.password;
+  const key = await wallet.privateKey;
+  const data = req.query.data;
+  console.log('PRIVATEKEY',key)
+  if(!key){
+     return
+  }
   
   try {
     // set to Factory contract
@@ -284,7 +293,7 @@ app.post('/api/createuser', async(req, res) => {
       FactoryABI, 
       contractAddr.FACTORY_ADDRESS, 
       "creatUser", 
-      [addr, pass], 
+      [data, addr, key], 
       RPC_URL, 
       CHAIN_ID
     );
@@ -389,13 +398,39 @@ app.post('/api/factory/create', async(req, res) => {
   const required = req.query.required;
   // To divide
   var ownerAddrs = owners;
-  console.log('owneradd',ownerAddrs)
+  console.log('owneradd',ownerAddrs, required)
   // call send Tx function
   var result = await sendTx(
     FactoryABI, 
     contractAddr.FACTORY_ADDRESS, 
     "createWallet", 
     [name, ownerAddrs, required], 
+    RPC_URL, 
+    CHAIN_ID
+  );
+   console.log('RESULT',result) 
+  if(result == true) {
+    
+    res.set({ 'Access-Control-Allow-Origin': '*' });
+    res.json({ result: 'success' });
+  } else {
+    
+    res.set({ 'Access-Control-Allow-Origin': '*' });
+    res.json({ result: 'fail' });
+  }
+});
+
+
+app.post('/api/factory/delete', async(req, res) => {
+  const index= req.query.id;
+ 
+ console.log('INDEX',index)
+  // call send Tx function
+  var result = await sendTx(
+    FactoryABI, 
+    contractAddr.FACTORY_ADDRESS, 
+    "deleteWallets", 
+    [index], 
     RPC_URL, 
     CHAIN_ID
   );
@@ -429,6 +464,8 @@ app.post('/api/wallet/submit', async(req, res) => {
   
   // get address from did
   let isowner = await walletContract.verifyOwner(sender);
+
+  console.log('QUERY',req.query,isowner)
   
   // call send Tx function
   if(isowner){
@@ -594,6 +631,56 @@ app.get("/api/create-payment-intent", async (req, res) => {
  * @param name VC file name
  * @param cid CID information
  */
+
+app.post("/api/claimnft", async (req, res) => {
+
+  try{
+    const addr = req.query.addr
+    const key =  req.query.key
+
+    console.log('KEY',key, addr)
+    if(!process.env.PRIVATE_KEY){
+      throw new errors("PRIVATE KEY IS NOT SET")
+    }
+   
+    const sdk =ThirdwebSDK.ThirdwebSDK.fromPrivateKey(
+      key,
+      "mumbai",
+      {
+        secretKey: process.env.TW_SECRATE_KEY
+      }
+    );
+
+    const loyaltyCardContract = await sdk.getContract(LOYALTY_CONTRACT_ADRESS)
+
+     const payload = {
+      to:addr,
+      metadata:{
+        name:" Soul Loyalty card",
+        description:` Soul Loyaly card for ${addr}`,
+        
+        atributes:[
+          {
+            traid_type: "Points",
+            value:10,
+          }
+        ]
+      }
+     }
+
+     const signedpayload = await loyaltyCardContract.erc721.signature.generate(payload)
+  res.set({ 'Access-Control-Allow-Origin': '*' });
+  
+  res.send(
+    {response: JSON.stringify(signedpayload)}
+  );
+  
+} catch(err) {
+  console.log(err)
+  res.send(err)}
+});
+
+
 app.post("/api/registerIpfs", async (req, res) => {
 
   // Get information from request parameters.
@@ -622,6 +709,7 @@ app.post("/api/registerIpfs", async (req, res) => {
   }
 });
 
+let portNo = 3001
 
 //API server start
 const server = app.listen(portNo, () => {
